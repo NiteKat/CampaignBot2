@@ -89,11 +89,12 @@ void TerranBuildOrders::T3DesperateAlliance()
   auto s = bot->getBuildOrder().getSupply();
   
   buildQueue[BWAPI::UnitTypes::Terran_Command_Center] = 1;
-  buildQueue[BWAPI::UnitTypes::Terran_Supply_Depot] = 3;
   if (bot->getUnitManager().getMyVisible(BWAPI::UnitTypes::Terran_Supply_Depot) >= 3)
-    int count = std::min(25, int(s * 2 >= BWAPI::Broodwar->self()->supplyTotal()) + bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Supply_Depot));
-  buildQueue[BWAPI::UnitTypes::Terran_Refinery] = int(s >= 30);
-  buildQueue[BWAPI::UnitTypes::Terran_Barracks] = 1 + int(s >= 32);
+    buildQueue[BWAPI::UnitTypes::Terran_Supply_Depot] = std::min(25, int(s * 2 >= BWAPI::Broodwar->self()->supplyTotal() - 2) + bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Supply_Depot));
+  else
+    buildQueue[BWAPI::UnitTypes::Terran_Supply_Depot] = 3;
+  buildQueue[BWAPI::UnitTypes::Terran_Refinery] = int(s >= 38);
+  buildQueue[BWAPI::UnitTypes::Terran_Barracks] = 1 + int(s >= 34);
   buildQueue[BWAPI::UnitTypes::Terran_Engineering_Bay] = 1;
   buildQueue[BWAPI::UnitTypes::Terran_Missile_Turret] = bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Engineering_Bay) ? 3 + int(s >= 30) + int(s >= 35) : 0;
   buildQueue[BWAPI::UnitTypes::Terran_Academy] = 1;
