@@ -9,6 +9,8 @@ void TerranBuildOrders::opener()
     T1Wasteland();
   else if (currentMap == "T2) Backwater Station")
     T2BackwaterStation();
+  else if (currentMap == "T3) Desperate Alliance")
+    T3DesperateAlliance();
 }
 
 void TerranBuildOrders::unlocks()
@@ -77,6 +79,26 @@ void TerranBuildOrders::T2BackwaterStation()
   buildQueue[BWAPI::UnitTypes::Terran_Refinery] = int(s >= 20);
   buildQueue[BWAPI::UnitTypes::Terran_Engineering_Bay] = int(s >= 20);
 
+  // Army Composition
+  setArmyComposition();
+}
+
+void TerranBuildOrders::T3DesperateAlliance()
+{
+  auto& buildQueue = bot->getBuildOrder().getBuildQueue();
+  auto s = bot->getBuildOrder().getSupply();
+  
+  buildQueue[BWAPI::UnitTypes::Terran_Command_Center] = 1;
+  buildQueue[BWAPI::UnitTypes::Terran_Supply_Depot] = 3;
+  if (bot->getUnitManager().getMyVisible(BWAPI::UnitTypes::Terran_Supply_Depot) >= 3)
+    int count = std::min(25, int(s * 2 >= BWAPI::Broodwar->self()->supplyTotal()) + bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Supply_Depot));
+  buildQueue[BWAPI::UnitTypes::Terran_Refinery] = int(s >= 30);
+  buildQueue[BWAPI::UnitTypes::Terran_Barracks] = 1 + int(s >= 32);
+  buildQueue[BWAPI::UnitTypes::Terran_Engineering_Bay] = 1;
+  buildQueue[BWAPI::UnitTypes::Terran_Missile_Turret] = bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Engineering_Bay) ? 3 + int(s >= 30) + int(s >= 35) : 0;
+  buildQueue[BWAPI::UnitTypes::Terran_Academy] = 1;
+  buildQueue[BWAPI::UnitTypes::Terran_Bunker] = 2;
+  
   // Army Composition
   setArmyComposition();
 }
