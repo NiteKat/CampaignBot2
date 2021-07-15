@@ -43,11 +43,12 @@ private:
   void updateRole(UnitInfo& unit);
   void updateSelf();
   void updateUnits();
+
+  std::set<std::shared_ptr<UnitInfo>> allyUnits;
   std::set<std::shared_ptr<UnitInfo>> enemyUnits;
   std::map<BWAPI::UnitType, int> myCompletedTypes;
   std::map<BWAPI::UnitType, int> myQueuedTypes;
   std::set<std::shared_ptr<UnitInfo>> myUnits;
   std::map<BWAPI::UnitType, int> myVisibleTypes;
   std::set<std::shared_ptr<UnitInfo>> neutralUnits;
-  //std::set<std::shared_ptr<UnitInfo>> enemyUnits;
 };

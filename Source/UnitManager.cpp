@@ -74,7 +74,26 @@ void UnitManager::updateCounts()
     if (p->getPlayerState() == PlayerState::Neutral)
     {
       for (auto& u : p->getUnits())
-        neutralUnits.insert(u);
+      {
+        if (u->getType().isRefinery())
+        {
+          if (BWAPI::Broodwar->self() == u->getUnit()->getPlayer())
+          {
+            myUnits.insert(u);
+            myVisibleTypes[u->getType()]++;
+            if (u->isCompleted())
+              myCompletedTypes[u->getType()]++;
+          }
+          else if (BWAPI::Broodwar->self()->isEnemy(u->getUnit()->getPlayer()))
+            enemyUnits.insert(u);
+          else if (BWAPI::Broodwar->self()->isAlly(u->getUnit()->getPlayer()))
+            allyUnits.insert(u);
+          else
+            neutralUnits.insert(u);
+        }
+        else
+          neutralUnits.insert(u);
+      }
     }
     if (p->getPlayerState() == PlayerState::Enemy)
     {
