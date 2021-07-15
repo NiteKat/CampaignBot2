@@ -46,10 +46,7 @@ void CampaignBot::onUnitDestroy(BWAPI::Unit unit)
 
 void CampaignBot::onUnitRenegade(BWAPI::Unit unit)
 {
-  if (!unit->getType().isRefinery())
-  {
-    playerManager.removeUnit(unit);
-    playerManager.storeUnit(unit);
-    cameraManager.addEvent(unit);
-  }
+  playerManager.removeUnit(unit);
+  playerManager.storeUnit(unit);
+  cameraManager.addEvent(unit);
 }
