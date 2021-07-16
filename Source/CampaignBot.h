@@ -42,6 +42,7 @@ private:
   WorkerManager workerManager;
   BuildingManager buildingManager;
   ProductionManager productionManager;
+  bool noBuildings = false;
 };
 
 extern std::unique_ptr<CampaignBot> bot;

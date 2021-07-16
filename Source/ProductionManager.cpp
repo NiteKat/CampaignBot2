@@ -162,6 +162,7 @@ void ProductionManager::updateUnits(UnitInfo& building)
 {
   // Check if we need to be repaired.
   if (building.isCompleted()
+    && building.getType().isBuilding()
     && double(building.getHitPoints()) / double(building.getMaxHitPoints()) < 0.75 && !building.hasRepairTarget()
     && building.getType().getRace() == BWAPI::Races::Terran)
   {
@@ -176,7 +177,10 @@ void ProductionManager::updateUnits(UnitInfo& building)
     }
   }
   // Check if we need to replace our old builder.
-  if (!building.isCompleted() && !building.getUnit()->getBuildUnit() && building.getType().getRace() == BWAPI::Races::Terran)
+  if (!building.isCompleted()
+    && building.getType().isBuilding()
+    && !building.getType().isAddon()
+    && !building.getUnit()->getBuildUnit() && building.getType().getRace() == BWAPI::Races::Terran)
   {
     auto& worker = bot->getUnitManager().getClosestUnit(building.getPosition(), PlayerState::Self, [](auto& u) {
       return u->hasTown() && u->hasResource() && u->getResource()->getType().isMineralField() && !u->hasBuildTarget() && !u->getUnit()->getBuildUnit();
