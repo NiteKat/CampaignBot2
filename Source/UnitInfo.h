@@ -32,6 +32,7 @@ public:
   std::shared_ptr<UnitInfo> getResource() { return resource.lock(); }
   int getResourceGroup() { return bwResourceGroup; }
   Roles getRole() { return role; }
+  int getSpaceRemaining() { return bwSpaceRemaining; }
   std::vector<std::weak_ptr<UnitInfo>>& getTargetedBy() { return targetedBy; }
   BWAPI::Region getTargetRegion() { return targetRegion; }
   std::shared_ptr<TownInfo> getTown() { return town.lock(); }

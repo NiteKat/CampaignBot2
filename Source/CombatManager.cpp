@@ -6,10 +6,60 @@ void CombatManager::onFrame()
   updateUnits();
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
+bool CombatManager::attack(UnitInfo& unit)
+{
+  if (unit.getRole() != Roles::Combat)
+    return false;
+
+  if (unit.getTargetRegion()
+    && unit.getRegion() != unit.getTargetRegion()
+    && unit.isIdle())
+  {
+    unit.attack(unit.getTargetRegion()->getCenter());
+    return true;
+  }
+}
+
+bool CombatManager::special(UnitInfo& unit)
+{
+  if (unit.hasWave()
+    && unit.getWave()->isActive()
+    && unit.getUnit()->getTransport())
+  {
+    unit.getUnit()->getTransport()->unload(unit.getUnit());
+    return true;
+  }
+
+
+
+  if ((unit.getType() == BWAPI::UnitTypes::Terran_Marine
+    || unit.getType() == BWAPI::UnitTypes::Terran_Firebat
+    || unit.getType() == BWAPI::UnitTypes::Terran_Ghost)
+    && bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Bunker) > 0)
+  {
+    auto& bunker = bot->getUnitManager().getClosestUnit(unit.getPosition(), PlayerState::Self, [](auto& u) {
+      return u->getType() == BWAPI::UnitTypes::Terran_Bunker && u->getSpaceRemaining() > 0;
+    });
+
+    if (bunker)
+    {
+      bool load = true;
+      if (unit.getRole() == Roles::Defender
+        && unit.getDistance(bunker->getPosition()) > 70)
+        load = false;
+      if (load)
+      {
+        unit.rightClick(bunker->getUnit());
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void CombatManager::updateDecision(UnitInfo& unit)
 {
   if (!unit.getUnit() || !unit.getUnit()->exists()
-    || unit.getUnit()->isLoaded()
     || unit.isLockedDown() || unit.isMaelstrommed() || unit.isStasised() || !unit.isCompleted())
     return;
 
@@ -20,10 +70,9 @@ void CombatManager::updateDecision(UnitInfo& unit)
     return;
   }
   updateTargets(unit);
-  if (unit.getTargetRegion()
-    && unit.getRegion() != unit.getTargetRegion()
-    && unit.isIdle())
-    unit.attack(unit.getTargetRegion()->getCenter());
+  if (!special(unit))
+    attack(unit);
+
 }
 
 void CombatManager::updateRole(UnitInfo& unit)
@@ -46,6 +95,10 @@ void CombatManager::updateRole(UnitInfo& unit)
 
 void CombatManager::updateTargets(UnitInfo& unit)
 {
+  // Only for combat units
+  if (unit.getRole() == Roles::Defender)
+    return;
+
   // Check if currently part of an attack wave. If not, we're a guard.
   if (!unit.getWave() || !unit.getWave()->isActive())
   {
@@ -103,7 +156,8 @@ void CombatManager::updateUnits()
 {
   for (auto& u : bot->getUnitManager().getUnits(PlayerState::Self))
   {
-    if (u->getRole() == Roles::Combat)
+    if (u->getRole() == Roles::Combat
+      || (u->getRole() == Roles::Defender && !u->getType().isBuilding()))
       updateDecision(*u);
   }
 }
