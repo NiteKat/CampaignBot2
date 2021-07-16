@@ -41,7 +41,8 @@ BWAPI::Region WaveManager::findFirstUnexploredRegion(BWAPI::Region startRegion)
     {
       if (!discovered[neighbor].myRegion)
       {
-        if (neighbor->getRegionGroupID() == v.myRegion->getRegionGroupID()) // this is for ground only
+        if (neighbor->getRegionGroupID() == v.myRegion->getRegionGroupID()
+          && BWAPI::Broodwar->hasPath(startRegion->getCenter(), neighbor->getCenter())) // this is for ground only
         {
           discovered[neighbor] = v;
           Q.push(node{ neighbor, &discovered[neighbor], v.cost + 1 });
