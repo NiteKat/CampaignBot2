@@ -2,6 +2,7 @@
 // ------------------ PUBLIC FUNCTIONS ------------------ //
 void ProductionManager::onFrame()
 {
+  updateUnits();
   updateProduction();
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
@@ -150,6 +151,45 @@ void ProductionManager::updateProduction()
             trainedThisFrame[type]++;
             lastTrainFrame = BWAPI::Broodwar->getFrameCount();
           }
+        }
+      }
+    }
+  }
+}
+
+void ProductionManager::updateUnits()
+{
+  for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
+  {
+    // Check if we need to replace our old builder.
+    if (!building->isCompleted() && !building->getUnit()->getBuildUnit() && building->getType().getRace() == BWAPI::Races::Terran)
+    {
+      // Get closest Resource Depot to find closest town for a worker.
+      auto closestDepot = bot->getUnitManager().getClosestUnit(building->getPosition(), PlayerState::Self, [](auto& u) {
+        return u->getType().isResourceDepot();
+      });
+      // If no depot, assume no workers to finish.
+      if (!closestDepot)
+        continue;
+
+      auto& town = closestDepot->getTown();
+      // Check that a town is assigned. It's possible we were flying.
+      if (!town)
+        continue;
+      
+      // Look for a mineral worker we can use.
+      for (auto& w : town->getTownWorkers())
+      {
+        auto& worker = w.lock();
+        if (!worker)
+          continue;
+
+        const auto isMineralWorker = worker->hasResource() && worker->getResource()->getType().isMineralField();
+        const auto notBuilding = !worker->hasBuildTarget() && !worker->getUnit()->getBuildUnit();
+        if (isMineralWorker && notBuilding)
+        {
+          worker->rightClick(building->getUnit());
+          return;
         }
       }
     }

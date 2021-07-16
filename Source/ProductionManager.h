@@ -4,7 +4,6 @@ struct ProductionManager
 {
 public:
   void onFrame();
-  void updateProduction();
 private:
   bool isAffordable(BWAPI::UnitType);
   bool isAffordable(BWAPI::UpgradeType);
@@ -14,6 +13,8 @@ private:
   bool isSuitable(BWAPI::UpgradeType);
   bool produce(UnitInfo&);
   int scoreUnit(BWAPI::UnitType);
+  void updateProduction();
+  void updateUnits();
   bool upgrade(UnitInfo&);
 
   int lastTrainFrame = 0;

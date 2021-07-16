@@ -75,7 +75,7 @@ void TownManager::onFrame()
     for (auto& [building, count] : town->getTownQueue())
     {
       auto assigned = 0;
-      for (auto& workerPointer : town->getWorkers())
+      for (auto& workerPointer : town->getTownWorkers())
       {
         auto& worker = workerPointer.lock();
         if (!worker)

@@ -22,7 +22,6 @@ public:
   BWAPI::Position getPosition() { return location; }
   int getResourceGroup() { return resourceGroup; }
   std::map<BWAPI::UnitType, int>& getTownQueue() { return townQueue; }
-  std::set<std::weak_ptr<UnitInfo>>& getWorkers() { return townWorkers; }
   bool isGasSaturated();
   void setResourceGroup(int newGroup) { resourceGroup = newGroup; }
   std::shared_ptr<UnitInfo> getLeastTargetedMineral();

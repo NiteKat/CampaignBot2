@@ -56,6 +56,7 @@ public:
   bool isUnderAttack() { return bwIsUnderAttack; }
   bool move(BWAPI::Position target, bool shiftQueueCommand = false) { return bwUnit->move(target, shiftQueueCommand); }
   void removeWorker(UnitInfo& unit);
+  bool rightClick(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->rightClick(target, shiftQueueCommand); }
   void setBuildTarget(BWAPI::TilePosition newBuildTarget) { buildTarget = newBuildTarget; }
   void setBuildType(BWAPI::UnitType newType) { buildType = newType; }
   void setResource(UnitInfo* unit) { unit ? resource = unit->weak_from_this() : resource.reset(); }
