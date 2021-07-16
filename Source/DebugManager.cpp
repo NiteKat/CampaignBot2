@@ -35,6 +35,22 @@ void DebugManager::drawTownPanel()
   drawTextScreen(BWAPI::Position(10, 20), text.str());
 }
 
+
+
+void drawUnitPanel()
+{
+  const char playerColorMap[] = { '\x14', '\x1' };
+  std::stringstream text("");
+  text << "\x17Unit Panel" << std::endl;
+  for (auto [type, count] : bot->getUnitManager().getMyCompletedCounts())
+  {
+    if (count)
+    {
+      
+    }
+  }
+}
+
 void DebugManager::drawUnitRoles()
 {
   for (auto& p : bot->getPlayerManager().getPlayers())

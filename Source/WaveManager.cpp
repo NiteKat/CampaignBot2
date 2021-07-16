@@ -81,7 +81,10 @@ void WaveManager::updateWaves()
       wave = *itr;
 
     for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Self))
+    {
       wave->addUnit(*unit);
+      unit->setRole(Roles::Combat);
+    }
 
     wave->setActive(true);
   }
@@ -97,7 +100,8 @@ void WaveManager::updateWaves()
       double bestDist = DBL_MAX;
       for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
       {
-        if (!unit->getType().isBuilding())
+        if (!unit->getType().isBuilding()
+          || unit->getType() == BWAPI::UnitTypes::Special_Terran_Beacon)
           continue;
 
         auto dist = unit->getDistance(wave->getCentroid());
@@ -115,6 +119,8 @@ void WaveManager::updateWaves()
         auto startRegion = BWAPI::Broodwar->getRegionAt(wave->getCentroid());
         if (!startRegion) // Somehow our centroid is not in a start region. If waves stall out will need a solution for this. Maybe fallback to start location?
           startRegion = BWAPI::Broodwar->getRegionAt(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
+        if (startRegion->getRegionGroupID() != wave->getFirstUnit()->getRegion()->getRegionGroupID())
+          startRegion = wave->getFirstUnit()->getRegion();
         wave->setTarget(findFirstUnexploredRegion(startRegion));
       }
     }

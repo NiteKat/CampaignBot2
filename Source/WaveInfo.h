@@ -6,6 +6,7 @@ struct WaveInfo : std::enable_shared_from_this<WaveInfo>
 public:
   void addUnit(UnitInfo& unit);
   BWAPI::Position getCentroid() { return centroid; }
+  std::shared_ptr<UnitInfo> getFirstUnit() { return (*(unitList.begin())).lock(); }
   BWAPI::Region getTarget() { return target; }
   double getTypeCount(BWAPI::UnitType type) { return unitCounts[type]; }
   std::map<BWAPI::UnitType, double>& getTypeCounts() { return unitCounts; }

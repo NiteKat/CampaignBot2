@@ -29,6 +29,7 @@ public:
     return best;
   }
   int getMyCompleted(BWAPI::UnitType type) { return myCompletedTypes[type]; }
+  std::map<BWAPI::UnitType, int>& getMyCompletedCounts() { return myCompletedTypes; }
   int getMyQueued(BWAPI::UnitType type) { return myQueuedTypes[type]; }
   int getMyVisible(BWAPI::UnitType type) { return myVisibleTypes[type]; }
   std::shared_ptr<UnitInfo> getUnitInfo(BWAPI::Unit unit);
