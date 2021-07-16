@@ -126,7 +126,6 @@ int ProductionManager::scoreUnit(BWAPI::UnitType type)
 
 void ProductionManager::updateProduction(UnitInfo& building)
 {
-  trainedThisFrame.clear();
 
   if (!building.getUnit()
     || building.getRole() != Roles::Production
