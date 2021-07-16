@@ -5,6 +5,7 @@ void DebugManager::onFrame()
   drawMapName();
   drawUnitRoles();
   drawTownPanel();
+  drawUnitPanel();
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
 void DebugManager::drawMapName()
@@ -37,18 +38,18 @@ void DebugManager::drawTownPanel()
 
 
 
-void drawUnitPanel()
+void DebugManager::drawUnitPanel()
 {
-  const char playerColorMap[] = { '\x14', '\x1' };
   std::stringstream text("");
+  const char* colorCodes[] = { "\x0", "\x1", "\x2", "\x3", "\x4", "\x5", "\x6", "\x7", "\x8", "\x9", "\xA", "\xB", "\xC", "\xD", "\xE", "\xF", "\x10",
+  "\x11", "\x12", "\x13", "\x14", "\x15", "\x16", "\x17", "\x18", "\x19", "\x1A", "\x1B", "\x1C", "\x1D", "\x1F" };
   text << "\x17Unit Panel" << std::endl;
   for (auto [type, count] : bot->getUnitManager().getMyCompletedCounts())
   {
     if (count)
-    {
-      
-    }
+      text << colorCodes[BWAPI::Broodwar->self()->getTextColor()] << type.c_str() << ": " << "\x2" << count << std::endl;
   }
+  drawTextScreen(BWAPI::Position(160, 20), text.str());
 }
 
 void DebugManager::drawUnitRoles()
