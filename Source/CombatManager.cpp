@@ -45,7 +45,9 @@ bool CombatManager::special(UnitInfo& unit)
     {
       bool load = true;
       if (unit.getRole() == Roles::Defender
-        && unit.getDistance(bunker->getPosition()) > 70)
+        && unit.getDistance(bunker->getPosition()) > 100)
+        load = false;
+      else if (unit.hasWave() && unit.getWave()->isActive())
         load = false;
       if (load)
       {
