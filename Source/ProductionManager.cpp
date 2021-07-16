@@ -3,10 +3,17 @@
 void ProductionManager::onFrame()
 {
   trainedThisFrame.clear();
+  // Crudely looping through twice for now to get workers prioritized.
   for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
   {
     updateUnits(*building);
-    updateProduction(*building);
+    if (building->getType().isResourceDepot())
+      updateProduction(*building);
+  }
+  for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
+  {
+    if (!building->getType().isResourceDepot())
+      updateProduction(*building);
   }
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
