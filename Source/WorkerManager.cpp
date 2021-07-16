@@ -14,6 +14,21 @@ void WorkerManager::updateDecision()
     if (unit->getRole() != Roles::Worker)
       continue;
 
+    if (unit->hasRepairTarget())
+    {
+      auto& target = unit->getRepairTarget();
+      // Check if done repairing.
+      if (target->getHitPoints() == target->getMaxHitPoints())
+      {
+        // Clear association.
+        target->setRepairTarget(nullptr);
+        unit->setRepairTarget(nullptr);
+      }
+
+      // Check if actively repairing
+      if (!unit->getUnit()->isRepairing())
+        unit->repair(target->getUnit());
+    }
     if (unit->isConstructing())
     {
       if (unit->getUnit()->getBuildUnit())

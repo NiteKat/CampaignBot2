@@ -47,6 +47,11 @@ void PlayerManager::removeUnit(BWAPI::Unit bwUnit)
           unit->getWave()->removeUnit(*unit);
           unit->setWave(nullptr);
         }
+        if (unit->hasRepairTarget())
+        {
+          unit->getRepairTarget()->setRepairTarget(nullptr);
+          unit->setRepairTarget(nullptr);
+        }
         if (unit->hasResource())
         {
           unit->getResource()->removeWorker(*unit);

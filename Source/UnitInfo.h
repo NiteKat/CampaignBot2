@@ -26,9 +26,12 @@ public:
   int getDistance(BWAPI::Position here) { return bwUnit->getDistance(here); }
   int getGathererCount() { return int(targetedBy.size()); }
   double getGroundDamage() { return groundDamage; }
+  int getHitPoints() { return bwHitPoints; }
+  int getMaxHitPoints() { return bwType.maxHitPoints(); }
   BWAPI::Position getPosition() { return bwPosition; }
   BWAPI::Region getRegion() { return bwRegion; }
   int getRemainingTrainFrames() { return bwRemainingTrainTime; }
+  std::shared_ptr<UnitInfo> getRepairTarget() { return repairTarget.lock(); }
   std::shared_ptr<UnitInfo> getResource() { return resource.lock(); }
   int getResourceGroup() { return bwResourceGroup; }
   Roles getRole() { return role; }
@@ -40,6 +43,8 @@ public:
   BWAPI::Unit getUnit() { return bwUnit; }
   std::shared_ptr<WaveInfo> getWave() { return wave.lock(); }
   bool hasBuildTarget() { return buildTarget != BWAPI::TilePositions::None; }
+  bool hasTown() { return !town.expired(); }
+  bool hasRepairTarget() { return !repairTarget.expired(); }
   bool hasResource() { return !resource.expired(); }
   bool hasWave() { return !wave.expired(); }
   bool isCarryingPowerup() { return bwUnit->getPowerUp(); }
@@ -57,9 +62,11 @@ public:
   bool isUnderAttack() { return bwIsUnderAttack; }
   bool move(BWAPI::Position target, bool shiftQueueCommand = false) { return bwUnit->move(target, shiftQueueCommand); }
   void removeWorker(UnitInfo& unit);
+  bool repair(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->repair(target, shiftQueueCommand); }
   bool rightClick(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->rightClick(target, shiftQueueCommand); }
   void setBuildTarget(BWAPI::TilePosition newBuildTarget) { buildTarget = newBuildTarget; }
   void setBuildType(BWAPI::UnitType newType) { buildType = newType; }
+  void setRepairTarget(UnitInfo* unit) { unit ? repairTarget = unit->weak_from_this() : repairTarget.reset(); }
   void setResource(UnitInfo* unit) { unit ? resource = unit->weak_from_this() : resource.reset(); }
   void setRole(Roles newRole) { role = newRole; }
   void setTargetRegion(BWAPI::Region newRegion) { targetRegion = newRegion; }
@@ -169,6 +176,7 @@ private:
   double bwVelocityX = 0.0;
   double bwVelocityY = 0.0;
   double groundDamage = 0.0;
+  std::weak_ptr<UnitInfo> repairTarget;
   std::weak_ptr<UnitInfo> resource;
   bool startingUnit;
   std::vector<std::weak_ptr<UnitInfo>> targetedBy;

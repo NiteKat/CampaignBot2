@@ -160,37 +160,30 @@ void ProductionManager::updateProduction(UnitInfo& building)
 
 void ProductionManager::updateUnits(UnitInfo& building)
 {
+  // Check if we need to be repaired.
+  if (building.isCompleted()
+    && double(building.getHitPoints()) / double(building.getMaxHitPoints()) < 0.75 && !building.hasRepairTarget()
+    && building.getType().getRace() == BWAPI::Races::Terran)
+  {
+    auto& worker = bot->getUnitManager().getClosestUnit(building.getPosition(), PlayerState::Self, [](auto& u) {
+      return u->hasTown() && u->hasResource() && u->getResource()->getType().isMineralField() && !u->hasBuildTarget() && !u->getUnit()->getBuildUnit();
+    });
+
+    if (worker)
+    {
+      building.setRepairTarget(&(*worker));
+      worker->setRepairTarget(&building);
+    }
+  }
   // Check if we need to replace our old builder.
   if (!building.isCompleted() && !building.getUnit()->getBuildUnit() && building.getType().getRace() == BWAPI::Races::Terran)
   {
-    // Get closest Resource Depot to find closest town for a worker.
-    auto closestDepot = bot->getUnitManager().getClosestUnit(building.getPosition(), PlayerState::Self, [](auto& u) {
-      return u->getType().isResourceDepot();
+    auto& worker = bot->getUnitManager().getClosestUnit(building.getPosition(), PlayerState::Self, [](auto& u) {
+      return u->hasTown() && u->hasResource() && u->getResource()->getType().isMineralField() && !u->hasBuildTarget() && !u->getUnit()->getBuildUnit();
     });
-    // If no depot, assume no workers to finish.
-    if (!closestDepot)
-      return;
 
-    auto& town = closestDepot->getTown();
-    // Check that a town is assigned. It's possible we were flying.
-    if (!town)
-      return;
-      
-    // Look for a mineral worker we can use.
-    for (auto& w : town->getTownWorkers())
-    {
-      auto& worker = w.lock();
-      if (!worker)
-        return;
-
-      const auto isMineralWorker = worker->hasResource() && worker->getResource()->getType().isMineralField();
-      const auto notBuilding = !worker->hasBuildTarget() && !worker->getUnit()->getBuildUnit();
-      if (isMineralWorker && notBuilding)
-      {
-        worker->rightClick(building.getUnit());
-        return;
-      }
-    }
+    if (worker)
+      worker->rightClick(building.getUnit());
   }
 }
 
