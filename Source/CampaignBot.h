@@ -20,6 +20,7 @@ struct CampaignBot
 {
 public:
   BuildingManager& getBuildingManager() { return buildingManager; }
+  bool getBuildings() { return buildings; }
   BuildOrder& getBuildOrder() { return buildOrder; }
   PlayerManager& getPlayerManager() { return playerManager; }
   TownManager& getTownManager() { return townManager; }
@@ -30,6 +31,7 @@ public:
   void onUnitComplete(BWAPI::Unit);
   void onUnitDestroy(BWAPI::Unit);
   void onUnitRenegade(BWAPI::Unit);
+  void setBuildings(bool newBuildings) { buildings = newBuildings; }
 private:
   BuildOrder buildOrder;
   CameraManager cameraManager;
@@ -42,7 +44,7 @@ private:
   WorkerManager workerManager;
   BuildingManager buildingManager;
   ProductionManager productionManager;
-  bool noBuildings = false;
+  bool buildings = false;
 };
 
 extern std::unique_ptr<CampaignBot> bot;

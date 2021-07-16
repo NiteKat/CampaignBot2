@@ -62,6 +62,8 @@ void UnitManager::updateCounts()
       for (auto& u : p->getUnits())
       {
         myUnits.insert(u);
+        if (u->getType().isBuilding())
+          bot->setBuildings(true);
         if (u->getType().isBuilding() || u->getRole() != Roles::Defender)
           myVisibleTypes[u->getType()]++;
         if (u->hasBuildTarget())

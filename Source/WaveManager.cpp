@@ -68,6 +68,23 @@ void WaveManager::removeEmptyWaves()
 void WaveManager::updateWaves()
 {
   bool needNewWave = false;
+  // Check if we need to make turn the defenders into combatants and a wave because we have no buildings.
+  // We will need to be able to disable this wave once we get buildings, but will fix that later.
+  if (BWAPI::Broodwar->getFrameCount() == 0
+    && !bot->getBuildings())
+  {
+    std::shared_ptr<WaveInfo> wave;
+    auto itr = waveList.begin();
+    if (itr == waveList.end())
+      wave = std::make_shared<WaveInfo>();
+    else
+      wave = *itr;
+
+    for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Self))
+      wave->addUnit(*unit);
+
+    wave->setActive(true);
+  }
   for (auto& wave : waveList)
   {
     // Update wave information
