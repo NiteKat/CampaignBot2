@@ -2,8 +2,12 @@
 // ------------------ PUBLIC FUNCTIONS ------------------ //
 void ProductionManager::onFrame()
 {
-  updateUnits();
-  updateProduction();
+  trainedThisFrame.clear();
+  for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
+  {
+    updateUnits(*building);
+    updateProduction(*building);
+  }
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
 bool ProductionManager::isAffordable(BWAPI::UnitType type)
@@ -113,84 +117,78 @@ int ProductionManager::scoreUnit(BWAPI::UnitType type)
   return std::max(0, int(wanted - bot->getUnitManager().getMyVisible(type)));
 }
 
-void ProductionManager::updateProduction()
+void ProductionManager::updateProduction(UnitInfo& building)
 {
   trainedThisFrame.clear();
 
-  for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
+  if (!building.getUnit()
+    || building.getRole() != Roles::Production
+    || !building.isCompleted()
+    || building.getRemainingTrainFrames() >= BWAPI::Broodwar->getLatencyFrames()
+    || lastTrainFrame >= BWAPI::Broodwar->getFrameCount() - BWAPI::Broodwar->getLatencyFrames()
+    || building.getType() == BWAPI::UnitTypes::Zerg_Larva)
+    return;
+
+  if (!building.getType().isResourceDepot() || building.getType().getRace() == BWAPI::Races::Zerg)
   {
-    if (!building->getUnit()
-      || building->getRole() != Roles::Production
-      || !building->isCompleted()
-      || building->getRemainingTrainFrames() >= BWAPI::Broodwar->getLatencyFrames()
-      || lastTrainFrame >= BWAPI::Broodwar->getFrameCount() - BWAPI::Broodwar->getLatencyFrames()
-      || building->getType() == BWAPI::UnitTypes::Zerg_Larva)
-      continue;
+    if (!produce(building))
+      upgrade(building);
+  }
+  else
+  {
+    for (auto& type : building.getType().buildsWhat())
+    {
+      if (!BWAPI::Broodwar->self()->isUnitAvailable(type))
+        continue;
 
-    if (!building->getType().isResourceDepot() || building->getType().getRace() == BWAPI::Races::Zerg)
-    {
-      if (!produce(*building))
-        upgrade(*building);
-    }
-    else
-    {
-      for (auto& type : building->getType().buildsWhat())
+      auto& town = building.getTown();
+      if (!town)
+        continue;
+
+      auto workers = town->getMineralCount() + town->getGasCount() * 3;
+      if (type.isWorker() && town->getTownWorkerCount() < workers && isAffordable(type))
       {
-        if (!BWAPI::Broodwar->self()->isUnitAvailable(type))
-          continue;
-
-        auto& town = building->getTown();
-        if (!town)
-          continue;
-
-        auto workers = town->getMineralCount() + town->getGasCount() * 3;
-        if (type.isWorker() && town->getTownWorkerCount() < workers && isAffordable(type))
+        if (building.train(type))
         {
-          if (building->train(type))
-          {
-            trainedThisFrame[type]++;
-            lastTrainFrame = BWAPI::Broodwar->getFrameCount();
-          }
+          trainedThisFrame[type]++;
+          lastTrainFrame = BWAPI::Broodwar->getFrameCount();
         }
       }
     }
   }
 }
 
-void ProductionManager::updateUnits()
+void ProductionManager::updateUnits(UnitInfo& building)
 {
-  for (auto& building : bot->getUnitManager().getUnits(PlayerState::Self))
+  // Check if we need to replace our old builder.
+  if (!building.isCompleted() && !building.getUnit()->getBuildUnit() && building.getType().getRace() == BWAPI::Races::Terran)
   {
-    // Check if we need to replace our old builder.
-    if (!building->isCompleted() && !building->getUnit()->getBuildUnit() && building->getType().getRace() == BWAPI::Races::Terran)
-    {
-      // Get closest Resource Depot to find closest town for a worker.
-      auto closestDepot = bot->getUnitManager().getClosestUnit(building->getPosition(), PlayerState::Self, [](auto& u) {
-        return u->getType().isResourceDepot();
-      });
-      // If no depot, assume no workers to finish.
-      if (!closestDepot)
-        continue;
+    // Get closest Resource Depot to find closest town for a worker.
+    auto closestDepot = bot->getUnitManager().getClosestUnit(building.getPosition(), PlayerState::Self, [](auto& u) {
+      return u->getType().isResourceDepot();
+    });
+    // If no depot, assume no workers to finish.
+    if (!closestDepot)
+      return;
 
-      auto& town = closestDepot->getTown();
-      // Check that a town is assigned. It's possible we were flying.
-      if (!town)
-        continue;
+    auto& town = closestDepot->getTown();
+    // Check that a town is assigned. It's possible we were flying.
+    if (!town)
+      return;
       
-      // Look for a mineral worker we can use.
-      for (auto& w : town->getTownWorkers())
-      {
-        auto& worker = w.lock();
-        if (!worker)
-          continue;
+    // Look for a mineral worker we can use.
+    for (auto& w : town->getTownWorkers())
+    {
+      auto& worker = w.lock();
+      if (!worker)
+        return;
 
-        const auto isMineralWorker = worker->hasResource() && worker->getResource()->getType().isMineralField();
-        const auto notBuilding = !worker->hasBuildTarget() && !worker->getUnit()->getBuildUnit();
-        if (isMineralWorker && notBuilding)
-        {
-          worker->rightClick(building->getUnit());
-          return;
-        }
+      const auto isMineralWorker = worker->hasResource() && worker->getResource()->getType().isMineralField();
+      const auto notBuilding = !worker->hasBuildTarget() && !worker->getUnit()->getBuildUnit();
+      if (isMineralWorker && notBuilding)
+      {
+        worker->rightClick(building.getUnit());
+        return;
       }
     }
   }

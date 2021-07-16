@@ -13,8 +13,8 @@ private:
   bool isSuitable(BWAPI::UpgradeType);
   bool produce(UnitInfo&);
   int scoreUnit(BWAPI::UnitType);
-  void updateProduction();
-  void updateUnits();
+  void updateProduction(UnitInfo& building);
+  void updateUnits(UnitInfo& building);
   bool upgrade(UnitInfo&);
 
   int lastTrainFrame = 0;
