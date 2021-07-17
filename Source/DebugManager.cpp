@@ -84,7 +84,7 @@ void DebugManager::drawWavePanel()
     else
       text << "No";
     text << std::endl;
-    text << "        # Units: " << wave->getUnitCount() << "Timer: " << wave->getGatherTimer() << std::endl;
+    text << "         # Units: " << wave->getUnitCount() << " Gather Timer: " << wave->getGatherTimer() << std::endl;
     i++;
   }
   drawTextScreen(BWAPI::Position(300, 20), text.str());
