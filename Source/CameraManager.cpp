@@ -27,12 +27,12 @@ void CameraManager::updateCamera()
       return (0 < num) - (num < 0);
     };
     auto newPos = screenPosition;
-    if (std::abs(diff.x) > 10)
-      newPos += BWAPI::Position(10 * sgn(diff.x), 0);
+    if (std::abs(diff.x) > 20)
+      newPos += BWAPI::Position(20 * sgn(diff.x), 0);
     else
       newPos += BWAPI::Position(diff.x, 0);
-    if (std::abs(diff.y) > 10)
-      newPos += BWAPI::Position(0, 10 * sgn(diff.y));
+    if (std::abs(diff.y) > 20)
+      newPos += BWAPI::Position(0, 20 * sgn(diff.y));
     else
       newPos += BWAPI::Position(0, diff.y);
     newPos.makeValid();
