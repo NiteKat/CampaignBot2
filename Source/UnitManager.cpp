@@ -51,6 +51,7 @@ void UnitManager::updateCounts()
   enemyUnits.clear();
   myUnits.clear();
   myCompletedTypes.clear();
+  myInactiveVisibleTypes.clear();
   myVisibleTypes.clear();
   myQueuedTypes.clear();
   neutralUnits.clear();
@@ -64,8 +65,12 @@ void UnitManager::updateCounts()
         myUnits.insert(u);
         if (u->getType().isBuilding())
           bot->setBuildings(true);
-        if (u->getType().isBuilding() || u->getRole() != Roles::Defender)
+        if (u->getType().isBuilding())
+        {
           myVisibleTypes[u->getType()]++;
+          if (u->hasWave() && !u->getWave()->isActive())
+            myInactiveVisibleTypes[u->getType()]++;
+        }
         if (u->hasBuildTarget())
           myQueuedTypes[u->getBuildType()]++;
         if (u->isCompleted() && (u->getType().isBuilding() || u->getRole() != Roles::Defender))

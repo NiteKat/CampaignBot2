@@ -30,6 +30,7 @@ public:
   }
   int getMyCompleted(BWAPI::UnitType type) { return myCompletedTypes[type]; }
   std::map<BWAPI::UnitType, int>& getMyCompletedCounts() { return myCompletedTypes; }
+  int getMyInactiveVisible(BWAPI::UnitType type) { return myInactiveVisibleTypes[type]; }
   int getMyQueued(BWAPI::UnitType type) { return myQueuedTypes[type]; }
   int getMyVisible(BWAPI::UnitType type) { return myVisibleTypes[type]; }
   std::shared_ptr<UnitInfo> getUnitInfo(BWAPI::Unit unit);
@@ -48,6 +49,7 @@ private:
   std::set<std::shared_ptr<UnitInfo>> allyUnits;
   std::set<std::shared_ptr<UnitInfo>> enemyUnits;
   std::map<BWAPI::UnitType, int> myCompletedTypes;
+  std::map<BWAPI::UnitType, int> myInactiveVisibleTypes;
   std::map<BWAPI::UnitType, int> myQueuedTypes;
   std::set<std::shared_ptr<UnitInfo>> myUnits;
   std::map<BWAPI::UnitType, int> myVisibleTypes;

@@ -38,7 +38,7 @@ bool CombatManager::special(UnitInfo& unit)
     && bot->getUnitManager().getMyCompleted(BWAPI::UnitTypes::Terran_Bunker) > 0)
   {
     auto& bunker = bot->getUnitManager().getClosestUnit(unit.getPosition(), PlayerState::Self, [](auto& u) {
-      return u->getType() == BWAPI::UnitTypes::Terran_Bunker && u->getSpaceRemaining() > 0;
+      return u->isCompleted() && u->getType() == BWAPI::UnitTypes::Terran_Bunker && u->getSpaceRemaining() > 0;
     });
 
     if (bunker)

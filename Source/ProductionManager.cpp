@@ -121,7 +121,7 @@ bool ProductionManager::produce(UnitInfo& unit)
 int ProductionManager::scoreUnit(BWAPI::UnitType type)
 {
   auto wanted = bot->getBuildOrder().getComposition(type);
-  return std::max(0, int(wanted - bot->getUnitManager().getMyVisible(type)));
+  return std::max(0, int(wanted - bot->getUnitManager().getMyInactiveVisible(type)));
 }
 
 void ProductionManager::updateProduction(UnitInfo& building)
