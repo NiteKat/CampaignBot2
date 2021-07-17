@@ -73,7 +73,7 @@ void UnitManager::updateCounts()
         }
         if (u->hasBuildTarget())
           myQueuedTypes[u->getBuildType()]++;
-        if (u->isCompleted() && (u->getType().isBuilding() || u->getRole() != Roles::Defender))
+        if (u->isCompleted())
           myCompletedTypes[u->getType()]++;
       }
         
