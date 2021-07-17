@@ -16,7 +16,7 @@ void WaveManager::onStart()
 
 // ------------------ PRIVATE FUNCTIONS ----------------- //
 
-BWAPI::Region WaveManager::findFirstUnexploredRegion(BWAPI::Region startRegion)
+std::vector<BWAPI::Region> WaveManager::findFirstUnexploredRegion(BWAPI::Region startRegion)
 {
   struct node
   {
@@ -26,17 +26,28 @@ BWAPI::Region WaveManager::findFirstUnexploredRegion(BWAPI::Region startRegion)
     node* parent;
     int cost;
   };
+  std::vector<BWAPI::Region> path;
   
   std::queue<node> Q;
   std::map<BWAPI::Region, node> discovered;
   Q.push(node{ startRegion, nullptr, 0 });
   discovered[startRegion] = Q.front();
+  auto returnPath = [&](node v) {
+    path.push_back(v.myRegion);
+    while (v.parent)
+    {
+      v = *v.parent;
+      path.push_back(v.myRegion);
+    }
+    return path;
+  };
+
   while (Q.size())
   {
     auto v = Q.front();
     Q.pop();
     if (!BWAPI::Broodwar->isExplored(BWAPI::TilePosition(v.myRegion->getCenter())))
-      return v.myRegion;
+      return returnPath(v);
     for (auto& neighbor : v.myRegion->getNeighbors())
     {
       if (!discovered[neighbor].myRegion)
@@ -50,7 +61,7 @@ BWAPI::Region WaveManager::findFirstUnexploredRegion(BWAPI::Region startRegion)
       }
     }
   }
-  return nullptr;
+  return path;
 }
 
 void WaveManager::removeEmptyWaves()
@@ -121,7 +132,13 @@ void WaveManager::updateWaves()
           startRegion = BWAPI::Broodwar->getRegionAt(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
         if (startRegion->getRegionGroupID() != wave->getFirstUnit()->getRegion()->getRegionGroupID())
           startRegion = wave->getFirstUnit()->getRegion();
-        wave->setTarget(findFirstUnexploredRegion(startRegion));
+        auto path = findFirstUnexploredRegion(startRegion);
+        if (path.size() >= 2)
+        {
+          if (!wave->getOldTarget())
+            wave->setOldTarget(path[1]);
+          wave->setTarget(path[0]);
+        }
       }
     }
     else if (!wave->isActive())

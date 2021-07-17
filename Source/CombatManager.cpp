@@ -150,7 +150,10 @@ void CombatManager::updateTargets(UnitInfo& unit)
   }
   else if (unit.getWave() && unit.getWave()->isActive()) // wave is active
   {
-    unit.setTargetRegion(unit.getWave()->getTarget());
+    if (unit.getWave()->isGathering())
+      unit.setTargetRegion(unit.getWave()->getOldTarget());
+    else
+      unit.setTargetRegion(unit.getWave()->getTarget());
   }
 }
 

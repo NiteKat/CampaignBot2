@@ -26,6 +26,8 @@ void WaveInfo::updateWave()
 {
   centroid = BWAPI::Position(0, 0);
   unitCounts.clear();
+  bool unitsGathered = oldTarget != nullptr;
+  bool atLeastOne = false;
   for (auto& u : unitList)
   {
     auto& unit = u.lock();
@@ -34,12 +36,22 @@ void WaveInfo::updateWave()
 
     centroid += unit->getPosition();
     unitCounts[unit->getType()]++;
+    if (unit->getRegion() != oldTarget)
+      unitsGathered = false;
+    else if (unit->getRegion() == oldTarget)
+      atLeastOne = true;
   }
+  if (unitsGathered)
+    gathering = false;
   if (unitList.size())
     centroid = centroid / unitList.size(); // NAIEVE will be wrong if expired pointers exist
   // If we have a target, let's make sure it's still valid.
   if (target)
   {
+    if (atLeastOne)
+      gatherTimer = std::max(0, gatherTimer - 1);
+    if (gatherTimer == 0)
+      gathering = false;
     // Check if it's a target because we're exploring to it
     if (BWAPI::Broodwar->isExplored(BWAPI::TilePosition(target->getCenter())))
     {
@@ -55,7 +67,13 @@ void WaveInfo::updateWave()
       }
       // need to reset target. Units will reset on next update.
       if (!buildingFound)
+      {
+        oldTarget = target;
         target = nullptr;
+        // Since we changed targets, we should gather.
+        gathering = true;
+        gatherTimer = 500;
+      }
     }
   }
 }

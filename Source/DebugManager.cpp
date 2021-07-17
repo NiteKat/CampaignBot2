@@ -6,6 +6,7 @@ void DebugManager::onFrame()
   drawUnitRoles();
   drawTownPanel();
   drawUnitPanel();
+  drawWavePanel();
 }
 // ------------------ PRIVATE FUNCTIONS ----------------- //
 void DebugManager::drawMapName()
@@ -44,7 +45,7 @@ void DebugManager::drawUnitPanel()
   const char* colorCodes[] = { "\x0", "\x1", "\x2", "\x3", "\x4", "\x5", "\x6", "\x7", "\x8", "\x9", "\xA", "\xB", "\xC", "\xD", "\xE", "\xF", "\x10",
   "\x11", "\x12", "\x13", "\x14", "\x15", "\x16", "\x17", "\x18", "\x19", "\x1A", "\x1B", "\x1C", "\x1D", "\x1F" };
   text << "\x17Unit Panel" << std::endl;
-  for (auto [type, count] : bot->getUnitManager().getMyCompletedCounts())
+  for (auto& [type, count] : bot->getUnitManager().getMyCompletedCounts())
   {
     if (count)
       text << colorCodes[BWAPI::Broodwar->self()->getTextColor()] << type.c_str() << ": " << "\x2" << count << std::endl;
@@ -59,8 +60,32 @@ void DebugManager::drawUnitRoles()
     if (p->isSelf())
     {
       for (auto& u : p->getUnits())
-        if (u->isCompleted())
+        if (u->isCompleted() && !u->getUnit()->getTransport())
           drawTextMap(u->getPosition(), roleTable[static_cast<int>(u->getRole())]);
     }
   }
+}
+
+void DebugManager::drawWavePanel()
+{
+  std::stringstream text("");
+  text << "\x17Wave Panel" << std::endl;
+  int i = 1;
+  for (auto& wave : bot->getWaveManager().getWaves())
+  {
+    text << "\x10Wave " << i << ":\x2 Active: ";
+    if (wave->isActive())
+      text << "Yes";
+    else
+      text << "No ";
+    text << " Gathering: ";
+    if (wave->isGathering())
+      text << "Yes";
+    else
+      text << "No";
+    text << std::endl;
+    text << "        # Units: " << wave->getUnitCount() << "Timer: " << wave->getGatherTimer() << std::endl;
+    i++;
+  }
+  drawTextScreen(BWAPI::Position(300, 20), text.str());
 }
