@@ -34,6 +34,25 @@ void WaveInfo::updateWave()
     if (!unit)
       continue;
 
+    if (beaconTarget != BWAPI::Positions::None)
+    {
+      auto dist = unit->getDistance(beaconTarget);
+      if (dist < 150)
+      {
+        for (auto& beacon : bot->getUnitManager().getBeacons())
+        {
+          if (beacon->getPosition() == beaconTarget)
+          {
+            beacon->setBeaconFlag(true);
+            oldTarget = BWAPI::Broodwar->getRegionAt(beaconTarget);
+            beaconTarget = BWAPI::Positions::None;
+            gathering = true;
+            gatherTimer = 500;
+          }
+        }
+      }
+    }
+
     centroid += unit->getPosition();
     unitCounts[unit->getType()]++;
     if (unit->getRegion() != oldTarget)

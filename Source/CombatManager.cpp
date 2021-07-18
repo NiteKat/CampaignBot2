@@ -25,6 +25,14 @@ bool CombatManager::attack(UnitInfo& unit)
     unit.attack(unit.getTargetRegion()->getCenter());
     return true;
   }
+  if (unit.getWave()
+    && unit.getWave()->getBeaconTarget() != BWAPI::Positions::None
+    && unit.isIdle())
+  {
+    unit.attack(unit.getWave()->getBeaconTarget());
+    return true;
+  }
+  return false;
 }
 
 bool CombatManager::special(UnitInfo& unit)

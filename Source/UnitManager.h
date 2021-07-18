@@ -7,6 +7,7 @@
 struct UnitManager
 {
 public:
+  std::set<std::shared_ptr<UnitInfo>>& getBeacons() { return beacons; }
   template<typename F>
   std::shared_ptr<UnitInfo> getClosestUnit(BWAPI::Position here, PlayerState player, F&& pred)
   {
@@ -47,6 +48,7 @@ private:
   void updateUnits();
 
   std::set<std::shared_ptr<UnitInfo>> allyUnits;
+  std::set<std::shared_ptr<UnitInfo>> beacons;
   std::set<std::shared_ptr<UnitInfo>> enemyUnits;
   std::map<BWAPI::UnitType, int> myCompletedTypes;
   std::map<BWAPI::UnitType, int> myInactiveVisibleTypes;

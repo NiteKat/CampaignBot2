@@ -5,6 +5,7 @@ struct WaveInfo : std::enable_shared_from_this<WaveInfo>
 {
 public:
   void addUnit(UnitInfo& unit);
+  BWAPI::Position getBeaconTarget() { return beaconTarget; }
   BWAPI::Position getCentroid() { return centroid; }
   std::shared_ptr<UnitInfo> getFirstUnit() { return (*(unitList.begin())).lock(); }
   int getGatherTimer() { return gatherTimer; }
@@ -17,11 +18,13 @@ public:
   bool isGathering() { return gathering; }
   void removeUnit(UnitInfo&);
   void setActive(bool newActive) { active = newActive; }
+  void setBeaconTarget(BWAPI::Position newBeaconTarget) { beaconTarget = newBeaconTarget; }
   void setOldTarget(BWAPI::Region newOldTarget) { oldTarget = newOldTarget; }
   void setTarget(BWAPI::Region newTarget) { target = newTarget; }
   void updateWave();
 private:
   bool active = false;
+  BWAPI::Position beaconTarget;
   BWAPI::Position centroid;
   bool gathering;
   int gatherTimer = 500;

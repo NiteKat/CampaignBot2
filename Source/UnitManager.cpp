@@ -48,6 +48,7 @@ void UnitManager::onFrame()
 
 void UnitManager::updateCounts()
 {
+  beacons.clear();
   enemyUnits.clear();
   myUnits.clear();
   myCompletedTypes.clear();
@@ -65,6 +66,8 @@ void UnitManager::updateCounts()
         myUnits.insert(u);
         if (u->getType().isBuilding())
           bot->setBuildings(true);
+        if (u->getType().isBeacon())
+          beacons.insert(u);
         if (u->getType().isBuilding())
         {
           myVisibleTypes[u->getType()]++;

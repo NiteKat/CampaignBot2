@@ -104,6 +104,30 @@ void WaveManager::updateWaves()
     // Update wave information
     wave->updateWave();
     // Check if the wave has a target currently
+    auto& beacons = bot->getUnitManager().getBeacons();
+    if (beacons.size() > 0 && wave->isActive())
+    {
+      BWAPI::Position bestBeacon = BWAPI::Positions::None;
+      double bestDist = DBL_MAX;
+      for (auto& unit : beacons)
+      {
+        if (unit->getBeaconFlag())
+          continue;
+
+        auto dist = unit->getDistance(wave->getCentroid());
+        if (dist < bestDist && BWAPI::Broodwar->hasPath(wave->getCentroid(), unit->getPosition()))
+        {
+          bestDist = dist;
+          bestBeacon = unit->getPosition();
+        }
+      }
+      if (bestBeacon != wave->getBeaconTarget())
+      {
+        wave->setBeaconTarget(bestBeacon);
+        wave->setOldTarget(wave->getTarget());
+        wave->setTarget(nullptr);
+      }
+    }
     if (!wave->getTarget() && wave->isActive())
     {
       // See if any enemy structures are known.
@@ -112,18 +136,12 @@ void WaveManager::updateWaves()
       std::shared_ptr<UnitInfo> beacon = nullptr;
       for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
       {
-        if (!unit->getType().isBuilding()
-          || unit->getBeaconFlag())
+        if (!unit->getType().isBuilding())
           continue;
 
         auto dist = unit->getDistance(wave->getCentroid());
         if (dist < bestDist)
         {
-          if (unit->getType().isBeacon()
-            && !unit->getBeaconFlag())
-            beacon = unit;
-          else
-            beacon = nullptr;
           bestDist = dist;
           bestRegion = BWAPI::Broodwar->getRegionAt(unit->getPosition());
         }
