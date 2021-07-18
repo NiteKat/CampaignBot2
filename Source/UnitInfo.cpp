@@ -69,8 +69,9 @@ void UnitInfo::update()
       if (bwInitialPosition == BWAPI::Positions::None)
         bwInitialPosition = bwUnit->getPosition();
       if (bwInitialTilePosition == BWAPI::TilePositions::None)
-        bwInitialTilePosition = bwUnit->getInitialTilePosition();
-      bwInitialHitPoints = bwUnit->getInitialHitPoints();
+        bwInitialTilePosition = bwUnit->getTilePosition();
+      if (!bwInitialHitPoints)
+        bwInitialHitPoints = bwUnit->getHitPoints();
       bwInitialResources = bwUnit->getInitialResources();
       bwAcidSporeCount = bwUnit->getAcidSporeCount();
       bwInterceptorCount = bwUnit->getInterceptorCount();
