@@ -109,21 +109,31 @@ void WaveManager::updateWaves()
       // See if any enemy structures are known.
       BWAPI::Region bestRegion = nullptr;
       double bestDist = DBL_MAX;
+      std::shared_ptr<UnitInfo> beacon = nullptr;
       for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
       {
         if (!unit->getType().isBuilding()
-          || unit->getType() == BWAPI::UnitTypes::Special_Terran_Beacon)
+          || unit->getBeaconFlag())
           continue;
 
         auto dist = unit->getDistance(wave->getCentroid());
         if (dist < bestDist)
         {
+          if (unit->getType().isBeacon()
+            && !unit->getBeaconFlag())
+            beacon = unit;
+          else
+            beacon = nullptr;
           bestDist = dist;
           bestRegion = BWAPI::Broodwar->getRegionAt(unit->getPosition());
         }
       }
       if (bestRegion) // Found a region with an enemy building in it.
+      {
         wave->setTarget(bestRegion);
+        if (beacon)
+          beacon->setBeaconFlag(true);
+      }
       else // Unable to find a region with an enemy building in it, need to explore.
       {
         // Will use BFS to find a region whose center is not revealed.

@@ -21,6 +21,7 @@ public:
   bool canAttackAir();
   bool gather(UnitInfo& unit, bool shiftQueueCommand = false) { return bwUnit->gather(unit.getUnit(), shiftQueueCommand); }
   double getAirDamage() { return airDamage; }
+  bool getBeaconFlag() { return beaconFlag; }
   BWAPI::TilePosition getBuildTarget() { return buildTarget; }
   BWAPI::UnitType getBuildType() { return buildType; }
   int getDistance(BWAPI::Position here) { return bwUnit->getDistance(here); }
@@ -65,6 +66,7 @@ public:
   void removeWorker(UnitInfo& unit);
   bool repair(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->repair(target, shiftQueueCommand); }
   bool rightClick(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->rightClick(target, shiftQueueCommand); }
+  void setBeaconFlag(bool newBeaconFlag) { beaconFlag = newBeaconFlag; }
   void setBuildTarget(BWAPI::TilePosition newBuildTarget) { buildTarget = newBuildTarget; }
   void setBuildType(BWAPI::UnitType newType) { buildType = newType; }
   void setRepairTarget(UnitInfo* unit) { unit ? repairTarget = unit->weak_from_this() : repairTarget.reset(); }
@@ -80,6 +82,7 @@ public:
 
 private:
   double airDamage = 0.0;
+  bool beaconFlag = false;
   BWAPI::TilePosition buildTarget = BWAPI::TilePositions::None;
   BWAPI::UnitType buildType = BWAPI::UnitTypes::None;
   int bwAcidSporeCount = 0;
