@@ -8,6 +8,13 @@ void CombatManager::onFrame()
 // ------------------ PRIVATE FUNCTIONS ----------------- //
 bool CombatManager::attack(UnitInfo& unit)
 {
+  if (unit.getRole() == Roles::Defender
+      && !unit.getType().isBuilding())
+  {
+    if (unit.isIdle()
+      && unit.getPosition() != unit.getInitialPosition())
+      unit.attack(unit.getInitialPosition());
+  }
   if (unit.getRole() != Roles::Combat)
     return false;
 

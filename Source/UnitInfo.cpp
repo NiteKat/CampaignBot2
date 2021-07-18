@@ -66,8 +66,10 @@ void UnitInfo::update()
       bwLastCommandFrame = bwUnit->getLastCommandFrame();
       bwLastAttackingPlayer = bwUnit->getLastAttackingPlayer();
       bwInitalType = bwUnit->getInitialType();
-      bwInitialPosition = bwUnit->getInitialPosition();
-      bwInitialTilePosition = bwUnit->getInitialTilePosition();
+      if (bwInitialPosition == BWAPI::Positions::None)
+        bwInitialPosition = bwUnit->getPosition();
+      if (bwInitialTilePosition == BWAPI::TilePositions::None)
+        bwInitialTilePosition = bwUnit->getInitialTilePosition();
       bwInitialHitPoints = bwUnit->getInitialHitPoints();
       bwInitialResources = bwUnit->getInitialResources();
       bwAcidSporeCount = bwUnit->getAcidSporeCount();

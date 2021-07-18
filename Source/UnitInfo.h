@@ -27,6 +27,7 @@ public:
   int getGathererCount() { return int(targetedBy.size()); }
   double getGroundDamage() { return groundDamage; }
   int getHitPoints() { return bwHitPoints; }
+  BWAPI::Position getInitialPosition() { return bwInitialPosition; }
   int getMaxHitPoints() { return bwType.maxHitPoints(); }
   BWAPI::Position getPosition() { return bwPosition; }
   BWAPI::Region getRegion() { return bwRegion; }

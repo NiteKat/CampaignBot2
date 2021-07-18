@@ -139,7 +139,11 @@ void UnitManager::updateRole(UnitInfo& unit)
   {
     if (unit.getType().isWorker())
       unit.setRole(Roles::Worker);
-    else if (!unit.getType().isBuilding() && BWAPI::Broodwar->getFrameCount() == 0)
+    else if ((!unit.getType().isBuilding() 
+        && BWAPI::Broodwar->getFrameCount() == 0)
+        || (unit.getType().isBuilding()
+        && !unit.getType().buildsWhat().size()
+        && !unit.getType().supplyProvided()))
       unit.setRole(Roles::Defender);
     else if (!unit.getType().isBuilding())
       unit.setRole(Roles::Combat);
