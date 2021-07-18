@@ -28,16 +28,17 @@ void WaveInfo::updateWave()
   unitCounts.clear();
   bool unitsGathered = oldTarget != nullptr;
   bool atLeastOne = false;
-  for (auto& u : unitList)
+  // Check if we should clear the Beacon Target if we have one.
+  if (beaconTarget != BWAPI::Positions::None)
   {
-    auto& unit = u.lock();
-    if (!unit)
-      continue;
+    auto& unit = bot->getUnitManager().getClosestUnit(beaconTarget, PlayerState::Self, [&](auto& u) {
+      return u->getWave() && u->getWave()->getBeaconTarget() == beaconTarget;
+    });
 
-    if (beaconTarget != BWAPI::Positions::None)
+    if (unit)
     {
       auto dist = unit->getDistance(beaconTarget);
-      if (dist < 150)
+      if (dist < 75)
       {
         for (auto& beacon : bot->getUnitManager().getBeacons())
         {
@@ -45,13 +46,22 @@ void WaveInfo::updateWave()
           {
             beacon->setBeaconFlag(true);
             oldTarget = BWAPI::Broodwar->getRegionAt(beaconTarget);
+            target = nullptr;
             beaconTarget = BWAPI::Positions::None;
             gathering = true;
             gatherTimer = 500;
+            break;
           }
         }
       }
     }
+  }
+  // Update wave information
+  for (auto& u : unitList)
+  {
+    auto& unit = u.lock();
+    if (!unit)
+      continue;
 
     centroid += unit->getPosition();
     unitCounts[unit->getType()]++;

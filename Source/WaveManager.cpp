@@ -128,7 +128,7 @@ void WaveManager::updateWaves()
         wave->setTarget(nullptr);
       }
     }
-    if (!wave->getTarget() && wave->isActive())
+    if (!wave->getTarget() && wave->getBeaconTarget() == BWAPI::Positions::None && wave->isActive())
     {
       // See if any enemy structures are known.
       BWAPI::Region bestRegion = nullptr;
@@ -136,7 +136,8 @@ void WaveManager::updateWaves()
       std::shared_ptr<UnitInfo> beacon = nullptr;
       for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
       {
-        if (!unit->getType().isBuilding())
+        if (!unit->getType().isBuilding()
+          || unit->getType().isBeacon())
           continue;
 
         auto dist = unit->getDistance(wave->getCentroid());
@@ -149,8 +150,6 @@ void WaveManager::updateWaves()
       if (bestRegion) // Found a region with an enemy building in it.
       {
         wave->setTarget(bestRegion);
-        if (beacon)
-          beacon->setBeaconFlag(true);
       }
       else // Unable to find a region with an enemy building in it, need to explore.
       {

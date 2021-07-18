@@ -24,7 +24,7 @@ public:
   void updateWave();
 private:
   bool active = false;
-  BWAPI::Position beaconTarget;
+  BWAPI::Position beaconTarget = BWAPI::Positions::None;
   BWAPI::Position centroid;
   bool gathering;
   int gatherTimer = 500;
