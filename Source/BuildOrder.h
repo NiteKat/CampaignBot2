@@ -10,6 +10,7 @@ public:
   double getComposition(BWAPI::UnitType type) { return armyComposition[type]; }
   std::map<BWAPI::UnitType, double>& getComposition() { return armyComposition; }
   std::string getCurrentBuildOrder() { return currentBuildOrder; }
+  int getMaxWave() { return maxWave; }
   int getSupply() { return supply; }
   std::set<BWAPI::UnitType>& getUnlockedTypes() { return unlockedTypes; }
   int getWave() { return wave; }
@@ -17,6 +18,7 @@ public:
   bool isUnitUnlocked(BWAPI::UnitType);
   void onFrame();
   void setComposition(BWAPI::UnitType type, double count) { armyComposition[type] = count; }
+  void setMaxWave(int newMaxWave) { maxWave = newMaxWave; }
 
 private:
   void updateBuild();
@@ -24,7 +26,9 @@ private:
   std::map<BWAPI::UnitType, double> armyComposition;
   std::map<BWAPI::UnitType, int> buildQueue;
   std::string currentBuildOrder;
+  bool insaneScript = false;
   std::string mapName;
+  int maxWave = 0;
   int supply = 0;
   std::set<BWAPI::UnitType> unlockedTypes;
   int wave = 1;

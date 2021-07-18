@@ -184,27 +184,70 @@ void WaveManager::updateWaves()
         needNewWave = true;
 
         // Should we advance to the next wave?
-        switch (buildOrder.getWave())
+        if (buildOrder.getMaxWave() == 5)
         {
-        case 1:
-          if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Factory)
+          switch (buildOrder.getWave())
+          {
+          case 1:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Factory)
               && BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode))
+              buildOrder.nextWave();
+            break;
+          case 2:
             buildOrder.nextWave();
-          break;
-        case 2:
-          buildOrder.nextWave();
-          break;
-        case 3:
-          if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Starport)
+            break;
+          case 3:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Starport)
               && BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Wraith))
+              buildOrder.nextWave();
+            break;
+          case 4:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Battlecruiser))
+              buildOrder.nextWave();
+            break;
+          default:
+            break;
+          }
+        }
+        else
+        {
+          switch (buildOrder.getWave())
+          {
+          case 1:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Factory)
+              && BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Vulture))
+              buildOrder.nextWave();
+            break;
+          case 2:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode))
+              buildOrder.nextWave();
+            break;
+          case 3:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Starport)
+              && BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Wraith))
+              buildOrder.nextWave();
+            break;
+          case 4:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Goliath))
+              buildOrder.nextWave();
+            break;
+          case 5:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Battlecruiser))
+              buildOrder.nextWave();
+            break;
+          case 6:
             buildOrder.nextWave();
-          break;
-        case 4:
-          if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Battlecruiser))
+            break;
+          case 7:
+            if (BWAPI::Broodwar->self()->isUnitAvailable(BWAPI::UnitTypes::Terran_Ghost))
+              buildOrder.nextWave();
+            break;
+          case 8:
             buildOrder.nextWave();
-          break;
-        default:
-          break;
+            break;
+          default:
+            break;
+          }
         }
       }
     }
