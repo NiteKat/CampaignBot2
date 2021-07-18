@@ -151,7 +151,7 @@ void UnitManager::updateRole(UnitInfo& unit)
     else if ((!unit.getType().isBuilding() 
         && BWAPI::Broodwar->getFrameCount() == 0)
         || (unit.getType().isBuilding()
-        && !unit.getType().buildsWhat().size()
+        && (unit.canAttackGround() || unit.canAttackAir())
         && !unit.getType().supplyProvided()))
       unit.setRole(Roles::Defender);
     else if (!unit.getType().isBuilding())
