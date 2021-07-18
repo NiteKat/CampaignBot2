@@ -85,6 +85,8 @@ void UnitManager::updateCounts()
     {
       for (auto& u : p->getUnits())
       {
+        if (u->getType().isBeacon())
+          beacons.insert(u);
         if (u->getType().isRefinery())
         {
           if (BWAPI::Broodwar->self() == u->getUnit()->getPlayer())
@@ -108,7 +110,11 @@ void UnitManager::updateCounts()
     if (p->getPlayerState() == PlayerState::Enemy)
     {
       for (auto& u : p->getUnits())
+      {
         enemyUnits.insert(u);
+        if (u->getType().isBeacon())
+          beacons.insert(u);
+      }
     }
   }
 }
