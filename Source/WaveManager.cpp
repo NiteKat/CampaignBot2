@@ -99,6 +99,19 @@ void WaveManager::updateWaves()
 
     wave->setActive(true);
   }
+  if (BWAPI::Broodwar->getFrameCount() > 0
+    && !bot->getBuildings())
+  {
+    auto& wave = *waveList.begin();
+    for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Self))
+    {
+      if (!unit->getWave())
+      {
+        wave->addUnit(*unit);
+        unit->setRole(Roles::Combat);
+      }
+    }
+  }
   for (auto& wave : waveList)
   {
     // Update wave information

@@ -25,6 +25,7 @@ public:
   BWAPI::TilePosition getBuildTarget() { return buildTarget; }
   BWAPI::UnitType getBuildType() { return buildType; }
   int getDistance(BWAPI::Position here) { return bwUnit->getDistance(here); }
+  int getEnergy() { return bwEnergy; }
   int getGathererCount() { return int(targetedBy.size()); }
   double getGroundDamage() { return groundDamage; }
   int getHitPoints() { return bwHitPoints; }
@@ -51,6 +52,7 @@ public:
   bool hasResource() { return !resource.expired(); }
   bool hasWave() { return !wave.expired(); }
   bool isCarryingPowerup() { return bwUnit->getPowerUp(); }
+  bool isCloaked() { return bwIsCloaked; }
   bool isCompleted() { return bwIsCompleted; }
   bool isConstructing() { return bwIsConstructing; }
   bool isGathering() { return bwIsGatheringGas || bwIsGatheringMinerals; }
@@ -81,6 +83,7 @@ public:
   bool train(BWAPI::UnitType type) { return bwUnit->train(type); }
   void update();
   bool upgrade(BWAPI::UpgradeType upgrade) { return bwUnit->upgrade(upgrade); }
+  bool useTech(BWAPI::TechType tech, BWAPI::Unit target = nullptr) { return bwUnit->useTech(tech, target); }
 
 private:
   double airDamage = 0.0;

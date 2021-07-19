@@ -38,6 +38,36 @@ bool CombatManager::attack(UnitInfo& unit)
   return false;
 }
 
+bool CombatManager::cast(UnitInfo& unit)
+{
+  // Hero Sarah Kerrigan - Lockdown / Cloak
+  if (unit.getType() == BWAPI::UnitTypes::Hero_Sarah_Kerrigan)
+  {
+    if (unit.isUnderAttack() && unit.getEnergy() >= 100)
+    {
+      for (auto& enemy : bot->getUnitManager().getUnits(PlayerState::Enemy))
+      {
+        if (!enemy->getType().isMechanical())
+          continue;
+
+        if (enemy->getUnit()->getTarget() == unit.getUnit()
+          && !enemy->isLockedDown())
+        {
+          unit.useTech(BWAPI::TechTypes::Lockdown, enemy->getUnit());
+          return true;
+        }
+      }
+    }
+    if (unit.isUnderAttack() && unit.getEnergy() >= 30 && !unit.isCloaked())
+    {
+      unit.useTech(BWAPI::TechTypes::Personnel_Cloaking);
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 bool CombatManager::special(UnitInfo& unit)
 {
   if (unit.hasWave()
@@ -90,8 +120,9 @@ void CombatManager::updateDecision(UnitInfo& unit)
     return;
   }
   updateTargets(unit);
-  if (!special(unit))
-    attack(unit);
+  if (!cast(unit))
+    if (!special(unit))
+      attack(unit);
 
 }
 
