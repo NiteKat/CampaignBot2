@@ -22,7 +22,10 @@ bool CombatManager::attack(UnitInfo& unit)
     && unit.getRegion() != unit.getTargetRegion()
     && unit.isIdle())
   {
-    unit.attack(unit.getTargetRegion()->getCenter());
+    if (unit.getTargetPosition() != BWAPI::Positions::None)
+      unit.attack(unit.getTargetPosition());
+    else
+      unit.attack(unit.getTargetRegion()->getCenter());
     return true;
   }
   if (unit.getWave()
@@ -169,6 +172,7 @@ void CombatManager::updateTargets(UnitInfo& unit)
       unit.setTargetRegion(unit.getWave()->getOldTarget());
     else
       unit.setTargetRegion(unit.getWave()->getTarget());
+    unit.setTargetPosition(unit.getWave()->getTargetPosition());
   }
 }
 

@@ -88,7 +88,8 @@ void WaveInfo::updateWave()
       bool buildingFound = false;
       for (auto& unit : bot->getUnitManager().getUnitsInRegion(PlayerState::Enemy, target))
       {
-        if (unit->getType().isBuilding())
+        if (unit->getType().isBuilding() &&
+          !unit->getType().isBeacon())
         {
           buildingFound = true;
           break;

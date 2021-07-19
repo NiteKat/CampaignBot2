@@ -11,6 +11,7 @@ public:
   int getGatherTimer() { return gatherTimer; }
   BWAPI::Region getOldTarget() { return oldTarget; }
   BWAPI::Region getTarget() { return target; }
+  BWAPI::Position getTargetPosition() { return targetPosition; }
   double getTypeCount(BWAPI::UnitType type) { return unitCounts[type]; }
   std::map<BWAPI::UnitType, double>& getTypeCounts() { return unitCounts; }
   int getUnitCount() { return unitList.size(); }
@@ -21,6 +22,7 @@ public:
   void setBeaconTarget(BWAPI::Position newBeaconTarget) { beaconTarget = newBeaconTarget; }
   void setOldTarget(BWAPI::Region newOldTarget) { oldTarget = newOldTarget; }
   void setTarget(BWAPI::Region newTarget) { target = newTarget; }
+  void setTargetPosition(BWAPI::Position newTargetPosition) { targetPosition = newTargetPosition; }
   void updateWave();
 private:
   bool active = false;
@@ -30,6 +32,7 @@ private:
   int gatherTimer = 500;
   BWAPI::Region oldTarget = nullptr;
   BWAPI::Region target = nullptr;
+  BWAPI::Position targetPosition = BWAPI::Positions::None;
   std::map<BWAPI::UnitType, double> unitCounts;
   std::set<std::weak_ptr<UnitInfo>> unitList;
 };

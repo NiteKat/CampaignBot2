@@ -11,9 +11,12 @@ public:
   std::map<BWAPI::UnitType, double>& getComposition() { return armyComposition; }
   std::string getCurrentBuildOrder() { return currentBuildOrder; }
   int getMaxWave() { return maxWave; }
+  std::vector<BWAPI::Position>& getPositionQueue() { return positionQueue; }
+  int getPositionQueueSpot() { return positionQueueSpot; }
   int getSupply() { return supply; }
   std::set<BWAPI::UnitType>& getUnlockedTypes() { return unlockedTypes; }
   int getWave() { return wave; }
+  void nextPositionQueueSpot() { positionQueueSpot = std::max(0, std::min(int(positionQueue.size() - 1), positionQueueSpot + 1)); }
   void nextWave() { wave++; }
   bool isUnitUnlocked(BWAPI::UnitType);
   void onFrame();
@@ -29,6 +32,8 @@ private:
   bool insaneScript = false;
   std::string mapName;
   int maxWave = 0;
+  std::vector<BWAPI::Position> positionQueue;
+  int positionQueueSpot = 0;
   int supply = 0;
   std::set<BWAPI::UnitType> unlockedTypes;
   int wave = 1;

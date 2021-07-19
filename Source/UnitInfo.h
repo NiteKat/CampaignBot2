@@ -39,6 +39,7 @@ public:
   Roles getRole() { return role; }
   int getSpaceRemaining() { return bwSpaceRemaining; }
   std::vector<std::weak_ptr<UnitInfo>>& getTargetedBy() { return targetedBy; }
+  BWAPI::Position getTargetPosition() { return targetPosition; }
   BWAPI::Region getTargetRegion() { return targetRegion; }
   std::shared_ptr<TownInfo> getTown() { return town.lock(); }
   BWAPI::UnitType getType() { return bwType; }
@@ -72,6 +73,7 @@ public:
   void setRepairTarget(UnitInfo* unit) { unit ? repairTarget = unit->weak_from_this() : repairTarget.reset(); }
   void setResource(UnitInfo* unit) { unit ? resource = unit->weak_from_this() : resource.reset(); }
   void setRole(Roles newRole) { role = newRole; }
+  void setTargetPosition(BWAPI::Position newTargetPosition) { targetPosition = newTargetPosition; }
   void setTargetRegion(BWAPI::Region newRegion) { targetRegion = newRegion; }
   void setTown(TownInfo* newTown);
   void setWave(WaveInfo* newWave);
@@ -184,6 +186,7 @@ private:
   std::weak_ptr<UnitInfo> resource;
   bool startingUnit;
   std::vector<std::weak_ptr<UnitInfo>> targetedBy;
+  BWAPI::Position targetPosition = BWAPI::Positions::None;
   BWAPI::Region targetRegion = nullptr;
   std::weak_ptr<TownInfo> town;
   std::weak_ptr<WaveInfo> wave;

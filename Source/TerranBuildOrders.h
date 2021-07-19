@@ -13,5 +13,6 @@ private:
   void T2BackwaterStationInsane();
   void T3DesperateAlliance();
   void T3DesperateAllianceInsane();
+  void T4JacobsInstalation();
   void TerranTutorial();
 };
