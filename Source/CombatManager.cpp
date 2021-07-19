@@ -64,6 +64,16 @@ bool CombatManager::cast(UnitInfo& unit)
       return true;
     }
   }
+
+  // Wraith - Cloak
+  if (unit.getType() == BWAPI::UnitTypes::Terran_Wraith)
+  {
+    if (unit.isUnderAttack() && BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field) && unit.getEnergy() >= 30 && !unit.isCloaked())
+    {
+      unit.useTech(BWAPI::TechTypes::Cloaking_Field);
+      return true;
+    }
+  }
   
   return false;
 }
