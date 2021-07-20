@@ -14,5 +14,6 @@ private:
   void T3DesperateAlliance();
   void T3DesperateAllianceInsane();
   void T4JacobsInstalation();
+  void T5Revolution();
   void TerranTutorial();
 };

@@ -60,6 +60,24 @@ bool CombatManager::attack(UnitInfo& unit)
 
 bool CombatManager::cast(UnitInfo& unit)
 {
+  if (unit.getWave()
+    && unit.getWave()->getUseCommandQueue())
+  {
+    auto& command = bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()];
+    if (command.type == CommandType::UseTech
+      && unit.isIdle()
+      && (command.unitTypes == BWAPI::UnitTypes::None
+        || command.unitTypes == unit.getType()))
+    {
+      if (command.techType == BWAPI::TechTypes::Personnel_Cloaking
+        && !unit.isCloaked())
+      {
+        unit.useTech(command.techType);
+        unit.nextCommandQueuePosition();
+        return true;
+      }
+    }
+  }
   // Hero Sarah Kerrigan - Lockdown / Cloak
   if (unit.getType() == BWAPI::UnitTypes::Hero_Sarah_Kerrigan)
   {
@@ -95,6 +113,29 @@ bool CombatManager::cast(UnitInfo& unit)
     }
   }
   
+  return false;
+}
+
+bool CombatManager::move(UnitInfo& unit)
+{
+  if (unit.getWave()
+    && unit.getWave()->getUseCommandQueue())
+  {
+    auto& command = bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()];
+    if (command.type == CommandType::Move
+      && unit.isIdle()
+      && (command.unitTypes == BWAPI::UnitTypes::None
+        || command.unitTypes == unit.getType()))
+    {
+      unit.move(command.target);
+      return true;
+    }
+    if (unit.getDistance(command.target) < 100)
+    {
+      unit.nextCommandQueuePosition();
+      return true;
+    }
+  }
   return false;
 }
 
@@ -174,8 +215,16 @@ void CombatManager::updateDecision(UnitInfo& unit)
   if (!wait(unit))
     if (!cast(unit))
       if (!special(unit))
-        attack(unit);
-
+        if (!attack(unit))
+          if (!move(unit))
+          {
+            // Check if we're on a command in a command queue that isn't for us.
+            if (unit.getWave()
+              && unit.getWave()->getUseCommandQueue()
+              && (bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()].unitTypes != BWAPI::UnitTypes::None
+                && bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()].unitTypes != unit.getType()))
+              unit.nextCommandQueuePosition();
+          }
 }
 
 void CombatManager::updateRole(UnitInfo& unit)

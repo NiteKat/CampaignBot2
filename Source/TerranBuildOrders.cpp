@@ -13,6 +13,8 @@ void TerranBuildOrders::opener()
     T3DesperateAlliance();
   else if (currentMap == "Untitled Scenario")
     T4JacobsInstalation();
+  else if (currentMap == "T5) The Antigan Revolt")
+    T5Revolution();
 }
 
 void TerranBuildOrders::unlocks()
@@ -224,6 +226,23 @@ void TerranBuildOrders::T4JacobsInstalation()
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3104, 1537)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2719, 1794)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2447, 2018))); // Victory Beacon
+  }
+}
+
+void TerranBuildOrders::T5Revolution()
+{
+  auto& commandQueue = bot->getBuildOrder().getCommandQueue();
+  if (!commandQueue.size())
+  {
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(143, 1185)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(734, 1886)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1600, 1409)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1504, 612)));
+    commandQueue.push_back(CommandInfo::UseTech(BWAPI::TechTypes::Personnel_Cloaking, BWAPI::UnitTypes::Hero_Sarah_Kerrigan));
+    commandQueue.push_back(CommandInfo::Wait(500, BWAPI::UnitTypes::Terran_Marine));
+    commandQueue.push_back(CommandInfo::Wait(500, BWAPI::UnitTypes::Hero_Jim_Raynor_Vulture));
+    commandQueue.push_back(CommandInfo::Move(BWAPI::Position(2768, 544), BWAPI::UnitTypes::Hero_Sarah_Kerrigan));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2768, 544)));
   }
 }
 
