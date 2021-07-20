@@ -8,6 +8,7 @@ private:
   bool attack(UnitInfo&);
   bool cast(UnitInfo&);
   bool special(UnitInfo&);
+  bool wait(UnitInfo&);
   void updateDecision(UnitInfo&);
   void updateRole(UnitInfo&);
   void updateTargets(UnitInfo&);

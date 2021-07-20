@@ -3,6 +3,7 @@
 #include "UnitInfo.h"
 #include "TownInfo.h"
 #include "WaveInfo.h"
+#include "CommandInfo.h"
 #include "PlayerManager.h"
 #include "UnitManager.h"
 #include "DebugManager.h"

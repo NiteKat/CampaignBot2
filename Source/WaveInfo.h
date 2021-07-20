@@ -15,6 +15,7 @@ public:
   double getTypeCount(BWAPI::UnitType type) { return unitCounts[type]; }
   std::map<BWAPI::UnitType, double>& getTypeCounts() { return unitCounts; }
   int getUnitCount() { return unitList.size(); }
+  bool getUseCommandQueue() { return useCommandQueue; }
   bool isActive() { return active; }
   bool isGathering() { return gathering; }
   void removeUnit(UnitInfo&);
@@ -23,11 +24,13 @@ public:
   void setOldTarget(BWAPI::Region newOldTarget) { oldTarget = newOldTarget; }
   void setTarget(BWAPI::Region newTarget) { target = newTarget; }
   void setTargetPosition(BWAPI::Position newTargetPosition) { targetPosition = newTargetPosition; }
+  void setUseCommandQueue(bool newUseCommandQueue) { useCommandQueue = newUseCommandQueue; }
   void updateWave();
 private:
   bool active = false;
   BWAPI::Position beaconTarget = BWAPI::Positions::None;
   BWAPI::Position centroid;
+  bool useCommandQueue = false;
   bool gathering;
   int gatherTimer = 500;
   BWAPI::Region oldTarget = nullptr;

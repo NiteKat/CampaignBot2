@@ -18,6 +18,32 @@ bool CombatManager::attack(UnitInfo& unit)
   if (unit.getRole() != Roles::Combat)
     return false;
 
+  if (unit.getWave()
+    && unit.getWave()->getUseCommandQueue())
+  {
+    auto& command = bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()];
+    if (command.type == CommandType::AttackMove
+      && unit.isIdle()
+      && (command.unitTypes == BWAPI::UnitTypes::None
+        || command.unitTypes == unit.getType()))
+    {
+      unit.attack(command.target);
+      return true;
+    }
+    if (unit.getDistance(command.target) < 100)
+    {
+      unit.nextCommandQueuePosition();
+      return true;
+    }
+    return false;
+  }
+  if (unit.getWave()
+    && unit.getWave()->getBeaconTarget() != BWAPI::Positions::None
+    && unit.isIdle())
+  {
+    unit.attack(unit.getWave()->getBeaconTarget());
+    return true;
+  }
   if (unit.getTargetRegion()
     && unit.getRegion() != unit.getTargetRegion()
     && unit.isIdle())
@@ -28,13 +54,7 @@ bool CombatManager::attack(UnitInfo& unit)
       unit.attack(unit.getTargetRegion()->getCenter());
     return true;
   }
-  if (unit.getWave()
-    && unit.getWave()->getBeaconTarget() != BWAPI::Positions::None
-    && unit.isIdle())
-  {
-    unit.attack(unit.getWave()->getBeaconTarget());
-    return true;
-  }
+
   return false;
 }
 
@@ -117,6 +137,27 @@ bool CombatManager::special(UnitInfo& unit)
   return false;
 }
 
+bool CombatManager::wait(UnitInfo& unit)
+{
+  if (unit.getWave()
+    && unit.getWave()->getUseCommandQueue())
+  {
+    auto& command = bot->getBuildOrder().getCommandQueue()[unit.getCommandQueuePosition()];
+    if (command.type == CommandType::Wait)
+    {
+      if (!unit.getWaitTimer())
+      {
+        unit.setWaitTimer(command.time + 1);
+        return true;
+      }
+      if (unit.getWaitTimer() == 1)
+        unit.nextCommandQueuePosition();
+      return true;
+    }
+  }
+  return false;
+}
+
 void CombatManager::updateDecision(UnitInfo& unit)
 {
   if (!unit.getUnit() || !unit.getUnit()->exists()
@@ -130,9 +171,10 @@ void CombatManager::updateDecision(UnitInfo& unit)
     return;
   }
   updateTargets(unit);
-  if (!cast(unit))
-    if (!special(unit))
-      attack(unit);
+  if (!wait(unit))
+    if (!cast(unit))
+      if (!special(unit))
+        attack(unit);
 
 }
 

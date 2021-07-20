@@ -24,6 +24,7 @@ public:
   bool getBeaconFlag() { return beaconFlag; }
   BWAPI::TilePosition getBuildTarget() { return buildTarget; }
   BWAPI::UnitType getBuildType() { return buildType; }
+  int getCommandQueuePosition() { return commandQueuePosition; }
   int getDistance(BWAPI::Position here) { return bwUnit->getDistance(here); }
   int getEnergy() { return bwEnergy; }
   int getGathererCount() { return int(targetedBy.size()); }
@@ -45,6 +46,7 @@ public:
   std::shared_ptr<TownInfo> getTown() { return town.lock(); }
   BWAPI::UnitType getType() { return bwType; }
   BWAPI::Unit getUnit() { return bwUnit; }
+  int getWaitTimer() { return waitTimer; }
   std::shared_ptr<WaveInfo> getWave() { return wave.lock(); }
   bool hasBuildTarget() { return buildTarget != BWAPI::TilePositions::None; }
   bool hasTown() { return !town.expired(); }
@@ -66,6 +68,7 @@ public:
   bool isStasised() { return bwStasisTimer > 0; }
   bool isUnderAttack() { return bwIsUnderAttack; }
   bool move(BWAPI::Position target, bool shiftQueueCommand = false) { return bwUnit->move(target, shiftQueueCommand); }
+  void nextCommandQueuePosition();
   void removeWorker(UnitInfo& unit);
   bool repair(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->repair(target, shiftQueueCommand); }
   bool rightClick(BWAPI::Unit target, bool shiftQueueCommand = false) { return bwUnit->rightClick(target, shiftQueueCommand); }
@@ -78,6 +81,7 @@ public:
   void setTargetPosition(BWAPI::Position newTargetPosition) { targetPosition = newTargetPosition; }
   void setTargetRegion(BWAPI::Region newRegion) { targetRegion = newRegion; }
   void setTown(TownInfo* newTown);
+  void setWaitTimer(int newWaitTimer) { waitTimer = newWaitTimer; }
   void setWave(WaveInfo* newWave);
   bool stop(bool queueShiftCommand = false) { return bwUnit->stop(queueShiftCommand); }
   bool train(BWAPI::UnitType type) { return bwUnit->train(type); }
@@ -184,6 +188,7 @@ private:
   BWAPI::UpgradeType bwUpgrade = BWAPI::UpgradeTypes::None;
   double bwVelocityX = 0.0;
   double bwVelocityY = 0.0;
+  int commandQueuePosition = 0;
   double groundDamage = 0.0;
   std::weak_ptr<UnitInfo> repairTarget;
   std::weak_ptr<UnitInfo> resource;
@@ -192,6 +197,7 @@ private:
   BWAPI::Position targetPosition = BWAPI::Positions::None;
   BWAPI::Region targetRegion = nullptr;
   std::weak_ptr<TownInfo> town;
+  int waitTimer;
   std::weak_ptr<WaveInfo> wave;
 };
 

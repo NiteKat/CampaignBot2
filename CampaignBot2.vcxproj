@@ -153,6 +153,7 @@
     <ClCompile Include="Source\CampaignBot.cpp" />
     <ClCompile Include="source\CampaignBotModule.cpp" />
     <ClCompile Include="source\CombatManager.cpp" />
+    <ClCompile Include="Source\CommandInfo.cpp" />
     <ClCompile Include="Source\DebugManager.cpp" />
     <ClCompile Include="Source\PlayerInfo.cpp" />
     <ClCompile Include="Source\PlayerManager.cpp" />
@@ -182,7 +183,9 @@
     <ClInclude Include="Source\CampaignBot.h" />
     <ClInclude Include="source\CampaignBotModule.h" />
     <ClInclude Include="source\CombatManager.h" />
+    <ClInclude Include="Source\CommandInfo.h" />
     <ClInclude Include="Source\DebugManager.h" />
+    <ClInclude Include="source\Header.h" />
     <ClInclude Include="Source\PlayerInfo.h" />
     <ClInclude Include="Source\PlayerManager.h" />
     <ClInclude Include="Source\PlayerState.h" />

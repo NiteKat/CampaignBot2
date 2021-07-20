@@ -98,6 +98,7 @@ void WaveManager::updateWaves()
     }
 
     wave->setActive(true);
+    wave->setUseCommandQueue(true);
   }
   if (BWAPI::Broodwar->getFrameCount() > 0
     && !bot->getBuildings())
@@ -117,7 +118,7 @@ void WaveManager::updateWaves()
     // Update wave information
     wave->updateWave();
     // Check if the wave has a target currently
-    if (!bot->getBuildOrder().getPositionQueue().size())
+    if (!bot->getBuildOrder().getCommandQueue().size())
     {
       auto& beacons = bot->getUnitManager().getBeacons();
       if (beacons.size() > 0 && wave->isActive())
@@ -146,51 +147,41 @@ void WaveManager::updateWaves()
     }
     if (!wave->getTarget() && wave->getBeaconTarget() == BWAPI::Positions::None && wave->isActive())
     {
-      // Installation map with a position queue to work through
-      if (bot->getBuildOrder().getPositionQueue().size())
+      // See if any enemy structures are known.
+      BWAPI::Region bestRegion = nullptr;
+      double bestDist = DBL_MAX;
+      std::shared_ptr<UnitInfo> beacon = nullptr;
+      for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
       {
-        wave->setTarget(BWAPI::Broodwar->getRegionAt(bot->getBuildOrder().getPositionQueue()[bot->getBuildOrder().getPositionQueueSpot()]));
-        wave->setTargetPosition(bot->getBuildOrder().getPositionQueue()[bot->getBuildOrder().getPositionQueueSpot()]);
-        bot->getBuildOrder().nextPositionQueueSpot();
-      }
-      else
-      {
-        // See if any enemy structures are known.
-        BWAPI::Region bestRegion = nullptr;
-        double bestDist = DBL_MAX;
-        std::shared_ptr<UnitInfo> beacon = nullptr;
-        for (auto& unit : bot->getUnitManager().getUnits(PlayerState::Enemy))
-        {
-          if (!unit->getType().isBuilding()
-            || unit->getType().isBeacon())
-            continue;
+        if (!unit->getType().isBuilding()
+          || unit->getType().isBeacon())
+          continue;
 
-          auto dist = unit->getDistance(wave->getCentroid());
-          if (dist < bestDist)
-          {
-            bestDist = dist;
-            bestRegion = BWAPI::Broodwar->getRegionAt(unit->getPosition());
-          }
-        }
-        if (bestRegion) // Found a region with an enemy building in it.
+        auto dist = unit->getDistance(wave->getCentroid());
+        if (dist < bestDist)
         {
-          wave->setTarget(bestRegion);
+          bestDist = dist;
+          bestRegion = BWAPI::Broodwar->getRegionAt(unit->getPosition());
         }
-        else // Unable to find a region with an enemy building in it, need to explore.
+      }
+      if (bestRegion) // Found a region with an enemy building in it.
+      {
+        wave->setTarget(bestRegion);
+      }
+      else // Unable to find a region with an enemy building in it, need to explore.
+      {
+        // Will use BFS to find a region whose center is not revealed.
+        auto startRegion = BWAPI::Broodwar->getRegionAt(wave->getCentroid());
+        if (!startRegion) // Somehow our centroid is not in a start region. If waves stall out will need a solution for this. Maybe fallback to start location?
+          startRegion = BWAPI::Broodwar->getRegionAt(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
+        if (startRegion->getRegionGroupID() != wave->getFirstUnit()->getRegion()->getRegionGroupID())
+          startRegion = wave->getFirstUnit()->getRegion();
+        auto path = findFirstUnexploredRegion(startRegion);
+        if (path.size() >= 2)
         {
-          // Will use BFS to find a region whose center is not revealed.
-          auto startRegion = BWAPI::Broodwar->getRegionAt(wave->getCentroid());
-          if (!startRegion) // Somehow our centroid is not in a start region. If waves stall out will need a solution for this. Maybe fallback to start location?
-            startRegion = BWAPI::Broodwar->getRegionAt(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
-          if (startRegion->getRegionGroupID() != wave->getFirstUnit()->getRegion()->getRegionGroupID())
-            startRegion = wave->getFirstUnit()->getRegion();
-          auto path = findFirstUnexploredRegion(startRegion);
-          if (path.size() >= 2)
-          {
-            if (!wave->getOldTarget())
-              wave->setOldTarget(path[1]);
-            wave->setTarget(path[0]);
-          }
+          if (!wave->getOldTarget())
+            wave->setOldTarget(path[1]);
+          wave->setTarget(path[0]);
         }
       }
     }

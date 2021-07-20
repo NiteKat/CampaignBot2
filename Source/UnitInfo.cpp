@@ -22,6 +22,11 @@ void UnitInfo::setTown(TownInfo* newTown)
   newTown ? town = newTown->weak_from_this() : town.reset();
 }
 
+void UnitInfo::nextCommandQueuePosition()
+{
+  commandQueuePosition = std::min(int(bot->getBuildOrder().getCommandQueue().size() - 1), commandQueuePosition + 1); 
+}
+
 void UnitInfo::removeWorker(UnitInfo& unit)
 {
   auto u = unit.weak_from_this();
@@ -37,6 +42,7 @@ void UnitInfo::removeWorker(UnitInfo& unit)
 
 void UnitInfo::update()
 {
+  waitTimer = std::max(0, waitTimer - 1);
   if (bwUnit)
   {
     if (BWAPI::Broodwar->getFrameCount() == 0)

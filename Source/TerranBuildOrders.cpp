@@ -190,37 +190,40 @@ void TerranBuildOrders::T3DesperateAllianceInsane()
 
 void TerranBuildOrders::T4JacobsInstalation()
 {
-  auto& positionQueue = bot->getBuildOrder().getPositionQueue();
-  if (!positionQueue.size())
+  auto& commandQueue = bot->getBuildOrder().getCommandQueue();
+  if (!commandQueue.size())
   {
-    positionQueue.push_back(BWAPI::Position(3007, 3487));
-    positionQueue.push_back(BWAPI::Position(2303, 3872));
-    //positionQueue.push_back(BWAPI::Position(3007, 3487));
-    positionQueue.push_back(BWAPI::Position(2623, 3296));
-    //positionQueue.push_back(BWAPI::Position(3390, 2592));
-    //positionQueue.push_back(BWAPI::Position(3599, 2529)); // Teleport Beacon
-    //positionQueue.push_back(BWAPI::Position(2542, 1055)); // Camera Beacon
-    //positionQueue.push_back(BWAPI::Position(2766, 1185)); // Teleport Beacon
-    //positionQueue.push_back(BWAPI::Position(2593, 3293));
-    positionQueue.push_back(BWAPI::Position(1985, 2915));
-    positionQueue.push_back(BWAPI::Position(1215, 2496));
-    positionQueue.push_back(BWAPI::Position(576, 2175));
-    positionQueue.push_back(BWAPI::Position(1088, 1888));
-    positionQueue.push_back(BWAPI::Position(1488, 2047)); // Defense Beacon
-    positionQueue.push_back(BWAPI::Position(942, 1344)); // Door Beacon
-    positionQueue.push_back(BWAPI::Position(512, 1185));
-    positionQueue.push_back(BWAPI::Position(1952, 1408));
-    positionQueue.push_back(BWAPI::Position(1466, 1152));
-    positionQueue.push_back(BWAPI::Position(2400, 641));
-    //positionQueue.push_back(BWAPI::Position(1826, 352));
-    //positionQueue.push_back(BWAPI::Position(1407, 545));
-    //positionQueue.push_back(BWAPI::Position(1056, 354));
-    positionQueue.push_back(BWAPI::Position(974, 190)); // Teleport Beacon
-    positionQueue.push_back(BWAPI::Position(3008, 738));
-    positionQueue.push_back(BWAPI::Position(3840, 1185));
-    positionQueue.push_back(BWAPI::Position(3104, 1537));
-    positionQueue.push_back(BWAPI::Position(2719, 1794));
-    positionQueue.push_back(BWAPI::Position(2447, 2018)); // Victory Beacon
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3007, 3487)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2303, 3872)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3007, 3487)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2623, 3296)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3390, 2592)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3599, 2529))); // Teleport Beacon
+    commandQueue.push_back(CommandInfo::Wait(60));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2542, 1055))); // Camera Beacon
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2766, 1185))); // Teleport Beacon
+    commandQueue.push_back(CommandInfo::Wait(60));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2593, 3293)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1985, 2915)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1215, 2496)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(576, 2175)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1088, 1888)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1488, 2047))); // Defense Beacon
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(942, 1344))); // Door Beacon
+    //commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(512, 1185)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1952, 1408)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1466, 1152)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2400, 641)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1826, 352)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1407, 545)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1056, 354)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(974, 190))); // Teleport Beacon
+    commandQueue.push_back(CommandInfo::Wait(60));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3008, 738)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3840, 1185)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(3104, 1537)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2719, 1794)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2447, 2018))); // Victory Beacon
   }
 }
 
