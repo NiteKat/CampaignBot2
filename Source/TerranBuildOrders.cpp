@@ -210,7 +210,7 @@ void TerranBuildOrders::T4JacobsInstalation()
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1088, 1888)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1488, 2047))); // Defense Beacon
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(942, 1344))); // Door Beacon
-    //commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(512, 1185)));
+    commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(512, 1185)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1952, 1408)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(1466, 1152)));
     commandQueue.push_back(CommandInfo::AttackMove(BWAPI::Position(2400, 641)));
