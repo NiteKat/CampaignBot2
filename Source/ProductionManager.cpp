@@ -51,6 +51,8 @@ bool ProductionManager::isCreatable(BWAPI::Unit building, BWAPI::UnitType type)
   {
   case BWAPI::UnitTypes::Terran_Marine:
     return true;
+  case BWAPI::UnitTypes::Terran_Vulture:
+    return true;
   default:
     break;
   }
@@ -126,12 +128,11 @@ int ProductionManager::scoreUnit(BWAPI::UnitType type)
 
 void ProductionManager::updateProduction(UnitInfo& building)
 {
-
   if (!building.getUnit()
     || building.getRole() != Roles::Production
     || !building.isCompleted()
     || building.getRemainingTrainFrames() >= BWAPI::Broodwar->getLatencyFrames()
-    || lastTrainFrame >= BWAPI::Broodwar->getFrameCount() - BWAPI::Broodwar->getLatencyFrames()
+    //|| lastTrainFrame >= BWAPI::Broodwar->getFrameCount() - BWAPI::Broodwar->getLatencyFrames()
     || building.getType() == BWAPI::UnitTypes::Zerg_Larva)
     return;
 
@@ -151,7 +152,7 @@ void ProductionManager::updateProduction(UnitInfo& building)
       if (!town)
         continue;
 
-      auto workers = town->getMineralCount() + town->getGasCount() * 3;
+      auto workers = bot->getBuildOrder().getInsaneScript() * town->getMineralCount() + town->getMineralCount() + town->getGasCount() * 3;
       if (type.isWorker() && town->getTownWorkerCount() < workers && isAffordable(type))
       {
         if (building.train(type))

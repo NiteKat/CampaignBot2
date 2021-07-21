@@ -9,7 +9,7 @@ void CampaignBotModule::onStart()
 
 void CampaignBotModule::onEnd(bool isWinner)
 {
-
+  bot->onEnd(isWinner);
 }
 
 void CampaignBotModule::onFrame()

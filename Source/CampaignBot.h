@@ -27,6 +27,7 @@ public:
   TownManager& getTownManager() { return townManager; }
   UnitManager& getUnitManager() { return unitManager; }
   WaveManager& getWaveManager() { return waveManager; }
+  void onEnd(bool);
   void onFrame();
   void onStart();
   void onSendText(std::string text);

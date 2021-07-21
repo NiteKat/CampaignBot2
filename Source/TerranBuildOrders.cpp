@@ -8,9 +8,19 @@ void TerranBuildOrders::opener()
   else if (currentMap == "T1) Wasteland")
     T1Wasteland();
   else if (currentMap == "T2) Backwater Station")
-    T2BackwaterStation();
+  {
+    if (!bot->getBuildOrder().getInsaneScript())
+      T2BackwaterStation();
+    else
+      T2BackwaterStationInsane();
+  }
   else if (currentMap == "T3) Desperate Alliance")
-    T3DesperateAlliance();
+  {
+    if (!bot->getBuildOrder().getInsaneScript())
+      T3DesperateAlliance();
+    else
+      T3DesperateAllianceInsane();
+  }
   else if (currentMap == "Untitled Scenario")
     T4JacobsInstalation();
   else if (currentMap == "T5) The Antigan Revolt")

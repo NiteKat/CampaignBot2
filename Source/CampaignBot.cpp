@@ -2,6 +2,11 @@
 
 std::unique_ptr<CampaignBot> bot;
 
+void CampaignBot::onEnd(bool isWinner)
+{
+  buildOrder.onEnd(isWinner);
+}
+
 void CampaignBot::onFrame()
 {
   playerManager.onFrame();
@@ -24,6 +29,7 @@ void CampaignBot::onFrame()
 
 void CampaignBot::onStart()
 {
+  buildOrder.onStart();
   cameraManager.onStart();
   waveManager.onStart();
 }
